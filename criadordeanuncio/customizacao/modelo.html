@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Página de Pagamento - Seguro</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Fontes e Bibliotecas -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            /* Paleta Clara e Segura (Tons de Azul e Cinza) */
+            --primary: #0284c7; 
+            --primary-hover: #0369a1;
+            --secondary: #0ea5e9;
+            --bg-page: #f0f4f8; 
+            --bg-card: #ffffff; 
+            --text-main: #1e293b; 
+            --text-muted: #64748b; 
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --bump-bg: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 15px; /* Ajuste inicial para mobile */
+        }
+
+        /* Ocultar scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Container Principal Responsivo --- */
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px; /* Levemente maior para acomodar melhor no PC */
+            padding: 24px 20px; /* Padding confortável no mobile */
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Media Query para Telas Maiores (PC / Tablets) */
+        @media (min-width: 600px) {
+            body { padding: 40px 20px; }
+            .container {
+                padding: 35px 40px;
+                border-radius: 24px;
+                gap: 24px;
+            }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Gatilhos Mentais: Urgência e Prova Social --- */
+        .timer-banner {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 14px;
+            margin-bottom: -5px;
+            text-align: center;
+        }
+
+        .social-proof {
+            text-align: center;
+            padding-top: 15px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+        .social-proof .stars {
+            color: #f59e0b; /* Amarelo ouro */
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .social-proof span {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* --- Cabeçalho, Logo e Indicador de Empresa --- */
+        .top-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px; /* Garante o espaço preservado da logo */
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            max-height: 50px;
+            object-fit: contain;
+        }
+
+        /* Etiqueta premium */
+        .company-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap; /* Evita quebra feia no mobile */
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .company-indicator .highlight { color: var(--primary); }
+
+        .company-indicator .separator {
+            width: 4px;
+            height: 4px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+        }
+
+        .header-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px; /* Mais espaço entre o título e o subtítulo */
+            margin-bottom: 12px; /* Margem extra para afastar da seção de opções */
+        }
+
+        h2 {
+            font-size: clamp(20px, 5vw, 24px); /* Tamanho adaptável */
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* --- Seção de Opções (Planos) --- */
+        .options-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 16px; /* Aumentado de 12px para dar mais respiro */
+            color: var(--text-main);
+            text-align: left;
+            width: 100%;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center; /* Centraliza o rádio com o conteúdo no geral */
+            justify-content: space-between;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-card);
+            gap: 12px; /* Espaço entre o rádio e o texto */
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: var(--bump-bg);
+        }
+
+        .option-label input[type="radio"] { display: none; }
+        
+        .option-label:has(input[type="radio"]:checked) {
+            border-color: var(--primary);
+            background: rgba(2, 132, 199, 0.05);
+        }
+
+        /* Ícone de Rádio Customizado via CSS Puro para melhor alinhamento */
+        .radio-icon {
+            font-family: 'Material Icons Round';
+            font-size: 22px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: color 0.2s ease;
+        }
+        
+        .option-label:has(input[type="radio"]:checked) .radio-icon { color: var(--primary); }
+        .option-label:has(input[type="radio"]:checked) .radio-icon::after { content: "radio_button_checked"; }
+        .option-label:not(:has(input[type="radio"]:checked)) .radio-icon::after { content: "radio_button_unchecked"; }
+
+        .option-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Flexbox aprimorado: Permite quebra elegante se o texto for gigante */
+        .option-name {
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .option-name-text {
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+
+        /* Gatilho de Ancoragem (Mais Vendido) - Fixo, sem espremer */
+        .badge-best-seller {
+            background: #f59e0b;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .price-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            flex-shrink: 0; 
+            text-align: right;
+        }
+
+        .price-old {
+            font-size: 11px;
+            color: var(--error);
+            text-decoration: line-through;
+            margin-bottom: 2px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .option-price {
+            font-weight: 800;
+            color: var(--text-main);
+            font-size: clamp(14px, 4vw, 16px);
+        }
+
+        /* --- Seção de Order Bumps --- */
+        .order-bumps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bump-label {
+            display: flex;
+            align-items: flex-start; /* Alinha o checkbox no topo com a primeira linha do texto */
+            gap: 12px;
+            padding: 16px;
+            border: 1px dashed var(--primary);
+            background: var(--bump-bg);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bump-label:has(input[type="checkbox"]:checked) {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid var(--success);
+        }
+
+        .bump-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--success);
+            margin-top: 1px; /* Ajuste fino visual */
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .bump-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .bump-title {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .bump-title span {
+            color: var(--success);
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .bump-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* --- Resumo e Inputs --- */
+        .form-section {
+            background: var(--bump-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Aumentado de 16px para 20px para melhor respiro interno */
+        }
+
+        @media (max-width: 480px) {
+            .form-section { padding: 20px 16px; gap: 16px; }
+        }
+
+        .total-display {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px; /* Aumentado de 16px para 20px */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .total-display strong {
+            font-size: clamp(20px, 6vw, 26px); /* Tamanho adaptável responsivo */
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        input[type="tel"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Botões */
+        .btn-primary {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--success);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-outline {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--bump-bg);
+            border-color: #cbd5e1;
+        }
+
+        /* Gatilho de Reversão de Risco (Garantia) */
+        .guarantee-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--success-light);
+            border-radius: 12px;
+            color: #065f46;
+            text-align: left;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            margin-top: 4px;
+        }
+
+        .guarantee-box i {
+            font-size: 28px;
+            color: var(--success);
+            flex-shrink: 0; /* Evita que o ícone esprema em celulares pequenos */
+        }
+
+        .guarantee-box .guarantee-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .guarantee-box strong {
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .guarantee-box p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.9;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* QR Code */
+        #qrcode-wrapper {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 16px auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Mensagens de Erro/Aviso */
+        .msg-text {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0;
+        }
+        .msg-text.show {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 8px;
+        }
+        
+        .text-error { color: var(--error); }
+        .hidden { display: none !important; }
+
+        .secure-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 5px;
+            color: var(--success);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Tela de Expirado */
+        #expired-content {
+            text-align: center;
+            padding: 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #expired-content h2 {
+            font-size: clamp(20px, 5vw, 24px);
+            color: var(--error);
+            margin-bottom: 12px;
+        }
+        #expired-content p {
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        
+        <!-- ============================================== -->
+        <!-- ÁREA DO CHECKOUT ATIVO -->
+        <!-- ============================================== -->
+        <div id="checkout-content">
+            
+            <!-- GATILHO: Urgência / Escassez -->
+            <div class="timer-banner">
+                <i class="material-icons-round">timer</i>
+                Esta oferta expira em: <span id="countdown">--:--</span>
+            </div>
+
+            <!-- Cabeçalho Dinâmico -->
+            <div class="top-header">
+                <div class="logo-container">
+                    <img id="dynamic-logo" src="" alt="Logo" class="logo" onerror="this.style.display='none'">
+                </div>
+                <div class="company-indicator">
+                    <span class="highlight" id="dynamic-company"></span>
+                    <div class="separator"></div>
+                    <span id="dynamic-plan"></span>
+                </div>
+            </div>
+
+            <div class="header-group">
+                <h2>Finalize seu pagamento</h2>
+                <p class="text-muted">Selecione uma opção e insira seu WhatsApp</p>
+            </div>
+
+            <!-- Seção Dinâmica: Seleção de Opções -->
+            <div>
+                <div class="options-title">Escolha uma opção:</div>
+                <div class="options-list" id="dynamic-options-list">
+                    <!-- Opções serão injetadas via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Seção Dinâmica: Order Bumps -->
+            <div id="bumps-container">
+                <div class="options-title" style="margin-top: 16px;">Adicione ao seu pedido:</div>
+                <div class="order-bumps" id="dynamic-bumps-list">
+                    <!-- Bumps serão injetados via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Área de Resumo e Input -->
+            <div class="form-section">
+                <div class="total-display">
+                    Total a pagar:
+                    <strong id="final-price">R$ 0,00</strong>
+                </div>
+
+                <input type="tel" id="whatsappInput" placeholder="Seu WhatsApp (Ex: 43991228540)" maxlength="15">
+
+                <button id="btn-generate-pix" class="btn-primary">
+                    <i class="material-icons-round">pix</i> Gerar Pix
+                </button>
+                
+                <div id="form-error-msg" class="msg-text text-error">⚠️ Preencha o WhatsApp corretamente!</div>
+
+                <!-- GATILHO: Reversão de Risco (Garantia) -->
+                <div class="guarantee-box">
+                    <i class="material-icons-round">verified_user</i>
+                    <div class="guarantee-text">
+                        <strong>Garantia Incondicional de 7 Dias</strong>
+                        <p>Seu dinheiro 100% seguro em sua compra.</p>
+                    </div>
+                </div>
+                
+                <!-- Seção do QR Code -->
+                <div id="pix-payment-section" class="hidden" style="margin-top: 15px; display: flex; flex-direction: column;">
+                    <div id="qrcode-wrapper">
+                        <div id="qrcode"></div>
+                    </div>
+
+                    <button id="btn-copy-pix" class="btn-outline">
+                        <i class="material-icons-round">content_copy</i> Copiar Pix Copia e Cola
+                    </button>
+                </div>
+            </div>
+
+            <!-- GATILHO: Prova Social -->
+            <div class="social-proof">
+                <div class="stars">★★★★★</div>
+                <span>Junte-se a mais de 4.300 clientes satisfeitos</span>
+            </div>
+            
+            <div class="secure-footer">
+                <i class="material-icons-round" style="font-size: 16px;">lock</i>
+                Ambiente 100% Seguro
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- ÁREA DE TEMPO EXPIRADO -->
+        <!-- ============================================== -->
+        <div id="expired-content" class="hidden">
+            <i class="material-icons-round" style="font-size: 60px; color: var(--error); margin-bottom: 10px;">timer_off</i>
+            <h2>Que pena! Você perdeu a oportunidade</h2>
+            <p class="text-muted">O tempo da sua oferta exclusiva se esgotou.</p>
+            <a href="#" id="btn-outra-chance" class="btn-primary">
+                Quero outra chance
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================================================
+        // CONFIGURAÇÕES GERAIS - ALTERE TUDO AQUI!
+        // =========================================================================
+        const CONFIG = {
+            empresa: {
+                nome: "CRIADOR DE ANÚNCIO",
+                plano: "CUSTOMIZAÇÃO",
+                logoUrl: "https://criadordeanuncio.com/veiculo/images/logo.png"
+            },
+            pix: {
+                chave: "financeiro@grupobhds.com",
+                nome: "BRUNO H DOS SANTOS",
+                cidade: "LONDRINA"
+            },
+            comportamento: {
+                tempoCronometroMinutos: 15, // Tempo que o cronômetro vai durar
+                linkOutraChance: "https://pagamento.grupobhds.com/outra-chance"
+            },
+            opcoes: [
+                // Para não ter o "De/Por" basta deixar o precoAntigo igual a null, mas agora todos possuem:
+                { id: "op1", nome: "Opção Básica", preco: 29.90, precoAntigo: 59.80, destaque: false, padrao: false },
+                { id: "op2", nome: "Opção Intermediária", preco: 58.90, precoAntigo: 117.80, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
+                { id: "op3", nome: "Opção Avançada", preco: 97.00, precoAntigo: 194.00, destaque: false, padrao: false },
+                { id: "op4", nome: "Opção Pro", preco: 147.00, precoAntigo: 294.00, destaque: false, padrao: false },
+                { id: "op5", nome: "Opção Premium", preco: 197.00, precoAntigo: 394.00, destaque: false, padrao: false }
+            ],
+            orderBumps: [
+                { id: "bump1", titulo: "Suporte VIP Prioritário", descricao: "Tenha seu atendimento passado na frente da fila.", preco: 19.90 },
+                { id: "bump2", titulo: "Acesso Vitalício", descricao: "Não perca o acesso após 1 ano, garanta para sempre.", preco: 29.90 }
+            ]
+        };
+        // =========================================================================
+
+
+        // --- Renderização Dinâmica (Baseado no CONFIG) ---
+        function renderPage() {
+            // Textos de Cabeçalho
+            document.getElementById('dynamic-logo').src = CONFIG.empresa.logoUrl;
+            document.getElementById('dynamic-company').innerText = CONFIG.empresa.nome;
+            document.getElementById('dynamic-plan').innerText = CONFIG.empresa.plano;
+            document.getElementById('btn-outra-chance').href = CONFIG.comportamento.linkOutraChance;
+
+            // Formatação de Dinheiro BR
+            const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            // Injeta as Opções
+            const optionsList = document.getElementById('dynamic-options-list');
+            let optionsHTML = "";
+            CONFIG.opcoes.forEach(op => {
+                const checked = op.padrao ? "checked" : "";
+                const badge = op.destaque ? `<span class="badge-best-seller" title="${op.textoDestaque}">${op.textoDestaque}</span>` : "";
+                const priceOld = op.precoAntigo ? `<span class="price-old">De ${formatMoney(op.precoAntigo)}</span>` : "";
+                
+                optionsHTML += `
+                    <label class="option-label">
+                        <input type="radio" name="planOption" value="${op.preco}" data-name="${op.nome}" ${checked}>
+                        <span class="radio-icon"></span>
+                        <div class="option-content">
+                            <div class="option-name">
+                                <span class="option-name-text">${op.nome}</span>
+                                ${badge}
+                            </div>
+                            <div class="price-group">
+                                ${priceOld}
+                                <span class="option-price">${formatMoney(op.preco)}</span>
+                            </div>
+                        </div>
+                    </label>
+                `;
+            });
+            optionsList.innerHTML = optionsHTML;
+
+            // Injeta os Order Bumps (ou oculta a sessão se não houver)
+            const bumpsContainer = document.getElementById('bumps-container');
+            const bumpsList = document.getElementById('dynamic-bumps-list');
+            if (CONFIG.orderBumps && CONFIG.orderBumps.length > 0) {
+                let bumpsHTML = "";
+                CONFIG.orderBumps.forEach(bump => {
+                    bumpsHTML += `
+                        <label class="bump-label">
+                            <input type="checkbox" class="bump-checkbox" value="${bump.preco}">
+                            <div class="bump-info">
+                                <div class="bump-title">${bump.titulo} <span>(+ ${formatMoney(bump.preco)})</span></div>
+                                <div class="bump-desc">${bump.descricao}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+                bumpsList.innerHTML = bumpsHTML;
+            } else {
+                bumpsContainer.style.display = 'none';
+            }
+        }
+        
+        // Chamada Inicial para Renderizar o HTML
+        renderPage();
+
+        // --- Variáveis de Sistema ---
+        const whatsappInput = document.getElementById('whatsappInput');
+        const btnGeneratePix = document.getElementById('btn-generate-pix');
+        const btnCopyPix = document.getElementById('btn-copy-pix');
+        const formErrorMsg = document.getElementById('form-error-msg');
+        const pixPaymentSection = document.getElementById('pix-payment-section');
+        const finalPriceEl = document.getElementById('final-price');
+
+        let currentPixString = "";
+        let qrCodeInstance = null;
+        let finalCalculatedTotal = 0;
+        let selectedPlanName = "";
+
+        // --- Lógica do Cronômetro (Salvo no LocalStorage com Reset de 24h) ---
+        const countdownEl = document.getElementById('countdown');
+        const checkoutContent = document.getElementById('checkout-content');
+        const expiredContent = document.getElementById('expired-content');
+        
+        const STORAGE_KEY = 'bhds_timer_end';
+        const TIMER_DURATION_MS = CONFIG.comportamento.tempoCronometroMinutos * 60 * 1000;
+        const RESET_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 horas
+
+        function initTimer() {
+            let endTime = localStorage.getItem(STORAGE_KEY);
+            const now = Date.now();
+
+            if (endTime) {
+                endTime = parseInt(endTime, 10);
+                
+                // Se já passou do tempo
+                if (now >= endTime) {
+                    // Verifica se já passou 24h desde que acabou
+                    if (now >= endTime + RESET_COOLDOWN_MS) {
+                        // Reseta dando nova chance
+                        endTime = now + TIMER_DURATION_MS;
+                        localStorage.setItem(STORAGE_KEY, endTime);
+                    } else {
+                        // Ainda está punido (mostra expirado)
+                        showExpired();
+                        return;
+                    }
+                }
+            } else {
+                // Primeira visita
+                endTime = now + TIMER_DURATION_MS;
+                localStorage.setItem(STORAGE_KEY, endTime);
+            }
+
+            // Loop do cronômetro
+            const timerInterval = setInterval(() => {
+                const currentTime = Date.now();
+                const diff = Math.floor((endTime - currentTime) / 1000);
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    countdownEl.innerText = "00:00";
+                    showExpired();
+                } else {
+                    const m = Math.floor(diff / 60);
+                    const s = diff % 60;
+                    countdownEl.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+                }
+            }, 1000);
+        }
+
+        function showExpired() {
+            checkoutContent.classList.add('hidden');
+            expiredContent.classList.remove('hidden');
+        }
+
+        // Inicia o Relógio
+        initTimer();
+        // ---------------------------------------------------
+
+        // Função para calcular e atualizar o valor total na tela
+        function updateTotal() {
+            let total = 0;
+            selectedPlanName = "Plano Padrão"; 
+
+            const selectedRadio = document.querySelector('input[name="planOption"]:checked');
+            const checkboxBumps = document.querySelectorAll('.bump-checkbox');
+
+            if (selectedRadio) {
+                total += parseFloat(selectedRadio.value) || 0;
+                selectedPlanName = selectedRadio.getAttribute('data-name') || "Plano";
+            }
+
+            checkboxBumps.forEach(cb => {
+                if(cb.checked) {
+                    total += parseFloat(cb.value) || 0;
+                }
+            });
+
+            finalCalculatedTotal = total;
+            finalPriceEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            hidePixSection();
+        }
+
+        // Delegação de eventos garantindo que o calculo funcione com inputs criados via JS
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'planOption' || e.target.classList.contains('bump-checkbox')) {
+                updateTotal();
+            }
+        });
+
+        updateTotal();
+
+        function hidePixSection() {
+            if (!pixPaymentSection.classList.contains('hidden')) {
+                pixPaymentSection.classList.add('hidden');
+            }
+        }
+
+        // Máscara WhatsApp
+        whatsappInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2);
+                if (value.length > 2) {
+                    formattedValue += ') ' + value.substring(2, 7);
+                    if (value.length > 7) {
+                        formattedValue += '-' + value.substring(7, 11);
+                    }
+                }
+            }
+            e.target.value = formattedValue;
+            hidePixSection();
+            formErrorMsg.classList.remove('show');
+        });
+
+        // Gerador de Pix Dinâmico
+        function generateDynamicPix(whatsapp, valor, planoName) {
+            const tlv = (id, value) => {
+                const len = value.length.toString().padStart(2, '0');
+                return `${id}${len}${value}`;
+            };
+
+            const chave = CONFIG.pix.chave;
+            const nome = CONFIG.pix.nome;
+            const cidade = CONFIG.pix.cidade;
+            const valorFormatado = (valor > 0 ? valor : 0).toFixed(2); 
+            
+            // "Empresa - Plano - ID - WhatsApp"
+            let descricaoBase = `${CONFIG.empresa.nome}`;
+            
+            if (planoName) {
+                descricaoBase += ` - ${planoName}`;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get('id');
+            if (idParam) {
+                descricaoBase += ` - ${idParam}`;
+            }
+
+            descricaoBase += ` - ${whatsapp}`;
+
+            let descricao = descricaoBase.substring(0, 99); 
+            descricao = descricao.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+            const merchantAccountInfo = tlv("00", "br.gov.bcb.pix") +
+                                        tlv("01", chave) +
+                                        tlv("02", descricao);
+            const merchantAccountInfoTlv = tlv("26", merchantAccountInfo);
+
+            let payload = "000201" + 
+                          "010211" + 
+                          merchantAccountInfoTlv + 
+                          "52040000" + 
+                          "5303986" + 
+                          tlv("54", valorFormatado) + 
+                          "5802BR" + 
+                          tlv("59", nome) + 
+                          tlv("60", cidade) + 
+                          tlv("62", tlv("05", "***")) + 
+                          "6304";
+
+            function crc16(str) {
+                let crc = 0xFFFF;
+                for (let c = 0; c < str.length; c++) {
+                    crc ^= str.charCodeAt(c) << 8;
+                    for (let i = 0; i < 8; i++) {
+                        if (crc & 0x8000) crc = (crc << 1) ^ 0x1021;
+                        else crc = crc << 1;
+                    }
+                }
+                return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+            }
+
+            return payload + crc16(payload);
+        }
+
+        // Botão Gerar Pix
+        btnGeneratePix.addEventListener('click', () => {
+            const wppRawValue = whatsappInput.value.replace(/\D/g, '');
+
+            if (!wppRawValue || wppRawValue.length < 10) {
+                formErrorMsg.classList.add('show');
+                setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3000);
+                return;
+            }
+
+            const originalBtnHtml = btnGeneratePix.innerHTML;
+            btnGeneratePix.innerHTML = "Atualizando Código...";
+
+            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanName);
+            pixPaymentSection.classList.remove('hidden');
+
+            const qrcodeContainer = document.getElementById("qrcode");
+            
+            if (!qrCodeInstance) {
+                qrCodeInstance = new QRCode(qrcodeContainer, {
+                    text: currentPixString,
+                    width: 170,
+                    height: 170,
+                    colorDark : "#1e293b", 
+                    colorLight : "#ffffff", 
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            } else {
+                qrCodeInstance.clear();
+                qrCodeInstance.makeCode(currentPixString);
+            }
+            
+            setTimeout(() => {
+                btnGeneratePix.innerHTML = originalBtnHtml;
+                qrcodeContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        });
+
+        // Botão Copiar Pix
+        btnCopyPix.addEventListener('click', () => {
+            const originalHtml = btnCopyPix.innerHTML;
+            const textArea = document.createElement("textarea");
+            textArea.value = currentPixString;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                btnCopyPix.innerHTML = "<i class='material-icons-round'>check</i> Copiado com sucesso!";
+                btnCopyPix.style.borderColor = "var(--success)";
+                btnCopyPix.style.color = "var(--success)";
+            } catch (err) {
+                console.error('Falha ao copiar', err);
+            }
+            textArea.remove();
+
+            setTimeout(() => {
+                btnCopyPix.innerHTML = originalHtml;
+                btnCopyPix.style.borderColor = "";
+                btnCopyPix.style.color = "";
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
