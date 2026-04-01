@@ -623,7 +623,7 @@
 
             <!-- Seção Dinâmica: Order Bumps -->
             <div id="bumps-container">
-                <div class="options-title" style="margin-top: 16px;">Adicione ao seu pedido:</div>
+                <div class="options-title" style="margin-top: 16px;">Aproveite e adicione junto:</div>
                 <div class="order-bumps" id="dynamic-bumps-list">
                     <!-- Bumps serão injetados via JavaScript -->
                 </div>
@@ -711,16 +711,16 @@
                 linkOutraChance: "https://pagamento.grupobhds.com/outra-chance"
             },
             opcoes: [
-                // Para não ter o "De/Por" basta deixar o precoAntigo igual a null, mas agora todos possuem:
-                { id: "op1", nome: "Opção Básica", preco: 29.90, precoAntigo: 59.80, destaque: false, padrao: false },
-                { id: "op2", nome: "Opção Intermediária", preco: 58.90, precoAntigo: 117.80, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
-                { id: "op3", nome: "Opção Avançada", preco: 97.00, precoAntigo: 194.00, destaque: false, padrao: false },
-                { id: "op4", nome: "Opção Pro", preco: 147.00, precoAntigo: 294.00, destaque: false, padrao: false },
-                { id: "op5", nome: "Opção Premium", preco: 197.00, precoAntigo: 394.00, destaque: false, padrao: false }
+               // Para não ter o "De/Por" basta deixar o precoAntigo igual a null, mas agora todos possuem:
+               // { id: "op1", nome: "Quero personalizar logo", preco: 29.90, precoAntigo: 59.80, destaque: false, padrao: false },
+               // { id: "op2", nome: "Quero personalizar endereço", preco: 58.90, precoAntigo: 117.80, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
+               // { id: "op3", nome: "Opção Avançada", preco: 97.00, precoAntigo: 194.00, destaque: false, padrao: false },
+               // { id: "op4", nome: "Opção Pro", preco: 147.00, precoAntigo: 294.00, destaque: false, padrao: false },
+                { id: "ctzOp1", nome: "Personalizar e usar uma vez", preco: 5.30, precoAntigo: 18.90, destaque: false, padrao: true }
             ],
             orderBumps: [
-                { id: "bump1", titulo: "Suporte VIP Prioritário", descricao: "Tenha seu atendimento passado na frente da fila.", preco: 19.90 },
-                { id: "bump2", titulo: "Acesso Vitalício", descricao: "Não perca o acesso após 1 ano, garanta para sempre.", preco: 29.90 }
+                { id: "bump1", titulo: "Criador Vitalício", descricao: "Perfil com sua logo e endereço personalizado", preco: 98.90 },
+                { id: "bump2", titulo: "Classificado por 30 dias", descricao: "Receba sua página de Classificado Exclusiva", preco: 8.90 }
             ]
         };
         // =========================================================================
@@ -775,7 +775,7 @@
                         <label class="bump-label">
                             <input type="checkbox" class="bump-checkbox" value="${bump.preco}">
                             <div class="bump-info">
-                                <div class="bump-title">${bump.titulo} <span>(+ ${formatMoney(bump.preco)})</span></div>
+                                <div class="bump-title">${bump.titulo} <span>(+${formatMoney(bump.preco)})</span></div>
                                 <div class="bump-desc">${bump.descricao}</div>
                             </div>
                         </label>

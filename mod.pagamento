@@ -96,7 +96,7 @@
             gap: 8px;
             font-weight: 800;
             font-size: 14px;
-            margin-bottom: -5px;
+            margin-bottom: 15px; /* Ajustado: Margem positiva para não encostar na logo */
             text-align: center;
         }
 
@@ -134,12 +134,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 60px; /* Garante o espaço preservado da logo */
-            margin-bottom: 12px;
+            min-height: 90px; /* Aumentado para suportar a nova logo maior */
+            margin-bottom: 16px;
         }
 
         .logo {
-            max-height: 50px;
+            max-height: 125px; /* Tamanho da logo aumentado */
             object-fit: contain;
         }
 
@@ -376,11 +376,12 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Aumentado de 16px para 20px para melhor respiro interno */
+            gap: 20px; 
+            margin-top: 14px; /* Espaçamento adicional solicitado entre os Bumps e o Total */
         }
 
         @media (max-width: 480px) {
-            .form-section { padding: 20px 16px; gap: 16px; }
+            .form-section { padding: 20px 16px; gap: 16px; margin-top: 8px; }
         }
 
         .total-display {
@@ -682,9 +683,9 @@
         <div id="expired-content" class="hidden">
             <i class="material-icons-round" style="font-size: 60px; color: var(--error); margin-bottom: 10px;">timer_off</i>
             <h2>Que pena! Você perdeu a oportunidade</h2>
-            <p class="text-muted">O tempo da sua oferta exclusiva se esgotou.</p>
+            <p class="text-muted">O tempo da sua oferta exclusiva acabou!</p>
             <a href="#" id="btn-outra-chance" class="btn-primary">
-                Quero outra chance
+                Quero outra oportunidade
             </a>
         </div>
 
@@ -696,9 +697,9 @@
         // =========================================================================
         const CONFIG = {
             empresa: {
-                nome: "CLIENTOU",
-                plano: "PLANO A",
-                logoUrl: "https://pagamento.grupobhds.com/xxx/logo.png"
+                nome: "CRIADOR DE ANÚNCIO",
+                plano: "CUSTOMIZAÇÃO",
+                logoUrl: "https://criadordeanuncio.com/veiculo/images/logo.png"
             },
             pix: {
                 chave: "financeiro@grupobhds.com",
@@ -711,8 +712,8 @@
             },
             opcoes: [
                 // Para não ter o "De/Por" basta deixar o precoAntigo igual a null, mas agora todos possuem:
-                { id: "op1", nome: "Opção Básica", preco: 29.90, precoAntigo: 59.80, destaque: false, padrao: false },
-                { id: "op2", nome: "Opção Intermediária", preco: 58.90, precoAntigo: 117.80, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
+                { id: "op1", nome: "Quero personalizar logo", preco: 5.30, precoAntigo: 59.80, destaque: false, padrao: false },
+                { id: "op2", nome: "Quero personalizar endereço", preco: 5.30, precoAntigo: 117.80, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
                 { id: "op3", nome: "Opção Avançada", preco: 97.00, precoAntigo: 194.00, destaque: false, padrao: false },
                 { id: "op4", nome: "Opção Pro", preco: 147.00, precoAntigo: 294.00, destaque: false, padrao: false },
                 { id: "op5", nome: "Opção Premium", preco: 197.00, precoAntigo: 394.00, destaque: false, padrao: false }
@@ -744,9 +745,10 @@
                 const badge = op.destaque ? `<span class="badge-best-seller" title="${op.textoDestaque}">${op.textoDestaque}</span>` : "";
                 const priceOld = op.precoAntigo ? `<span class="price-old">De ${formatMoney(op.precoAntigo)}</span>` : "";
                 
+                // Adicionado data-id="${op.id}" para recuperar o ID ao invés do nome
                 optionsHTML += `
                     <label class="option-label">
-                        <input type="radio" name="planOption" value="${op.preco}" data-name="${op.nome}" ${checked}>
+                        <input type="radio" name="planOption" value="${op.preco}" data-id="${op.id}" data-name="${op.nome}" ${checked}>
                         <span class="radio-icon"></span>
                         <div class="option-content">
                             <div class="option-name">
@@ -799,7 +801,7 @@
         let currentPixString = "";
         let qrCodeInstance = null;
         let finalCalculatedTotal = 0;
-        let selectedPlanName = "";
+        let selectedPlanId = ""; // Alterado de selectedPlanName para selectedPlanId
 
         // --- Lógica do Cronômetro (Salvo no LocalStorage com Reset de 24h) ---
         const countdownEl = document.getElementById('countdown');
@@ -865,14 +867,15 @@
         // Função para calcular e atualizar o valor total na tela
         function updateTotal() {
             let total = 0;
-            selectedPlanName = "Plano Padrão"; 
+            selectedPlanId = "op"; // Fallback de segurança para ID
 
             const selectedRadio = document.querySelector('input[name="planOption"]:checked');
             const checkboxBumps = document.querySelectorAll('.bump-checkbox');
 
             if (selectedRadio) {
                 total += parseFloat(selectedRadio.value) || 0;
-                selectedPlanName = selectedRadio.getAttribute('data-name') || "Plano";
+                // Extraindo o ID (op1, op2, etc) ao invés do nome da opção
+                selectedPlanId = selectedRadio.getAttribute('data-id') || "op";
             }
 
             checkboxBumps.forEach(cb => {
@@ -921,7 +924,7 @@
         });
 
         // Gerador de Pix Dinâmico
-        function generateDynamicPix(whatsapp, valor, planoName) {
+        function generateDynamicPix(whatsapp, valor, planoId) {
             const tlv = (id, value) => {
                 const len = value.length.toString().padStart(2, '0');
                 return `${id}${len}${value}`;
@@ -932,17 +935,17 @@
             const cidade = CONFIG.pix.cidade;
             const valorFormatado = (valor > 0 ? valor : 0).toFixed(2); 
             
-            // "Empresa - Plano - ID - WhatsApp"
+            // Nova lógica: "Empresa - ID da opção - ID(Url) - WhatsApp"
             let descricaoBase = `${CONFIG.empresa.nome}`;
             
-            if (planoName) {
-                descricaoBase += ` - ${planoName}`;
+            if (planoId) {
+                descricaoBase += ` - ${planoId}`; // Adiciona "op1", "op2", etc.
             }
 
             const urlParams = new URLSearchParams(window.location.search);
             const idParam = urlParams.get('id');
             if (idParam) {
-                descricaoBase += ` - ${idParam}`;
+                descricaoBase += ` - ${idParam}`; // Adiciona o ID da URL se existir
             }
 
             descricaoBase += ` - ${whatsapp}`;
@@ -995,7 +998,8 @@
             const originalBtnHtml = btnGeneratePix.innerHTML;
             btnGeneratePix.innerHTML = "Atualizando Código...";
 
-            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanName);
+            // Passando a variável selectedPlanId (ex: op1) ao invés do nome
+            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanId);
             pixPaymentSection.classList.remove('hidden');
 
             const qrcodeContainer = document.getElementById("qrcode");
