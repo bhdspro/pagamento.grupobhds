@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Página de Pagamento - Espião de Transação</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            /* Paleta Clara e Segura (Tons de Azul e Cinza) */
+            --primary: #0284c7; 
+            --primary-hover: #0369a1;
+            --secondary: #0ea5e9;
+            --bg-page: #f0f4f8; 
+            --bg-card: #ffffff; 
+            --text-main: #1e293b; 
+            --text-muted: #64748b; 
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --bump-bg: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 15px; /* Ajuste inicial para mobile */
+            /* Evita a seleção acidental de texto por curiosos */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Permite selecionar texto dentro de inputs apenas */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* Ocultar scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Container Principal Responsivo --- */
+        .container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 520px; /* Levemente maior para acomodar melhor no PC */
+            padding: 24px 20px; /* Padding confortável no mobile */
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Media Query para Telas Maiores (PC / Tablets) */
+        @media (min-width: 600px) {
+            body { padding: 40px 20px; }
+            .container {
+                padding: 35px 40px;
+                border-radius: 24px;
+                gap: 24px;
+            }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Gatilhos Mentais: Urgência e Prova Social --- */
+        .timer-banner {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 14px;
+            margin-bottom: 15px; /* Ajustado: Margem positiva para não encostar na logo */
+            text-align: center;
+        }
+
+        .social-proof {
+            text-align: center;
+            padding-top: 15px;
+            margin-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+        .social-proof .stars {
+            color: #f59e0b; /* Amarelo ouro */
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+        .social-proof span {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* --- Cabeçalho, Logo e Indicador de Empresa --- */
+        .top-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90px; /* Aumentado para suportar a nova logo maior */
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            max-height: 125px; /* Tamanho da logo aumentado */
+            object-fit: contain;
+        }
+
+        /* Etiqueta premium */
+        .company-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap; /* Evita quebra feia no mobile */
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .company-indicator .highlight { color: var(--primary); }
+
+        .company-indicator .separator {
+            width: 4px;
+            height: 4px;
+            background-color: var(--border-color);
+            border-radius: 50%;
+        }
+
+        .header-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px; /* Mais espaço entre o título e o subtítulo */
+            margin-bottom: 12px; /* Margem extra para afastar da seção de opções */
+        }
+
+        h2 {
+            font-size: clamp(20px, 5vw, 24px); /* Tamanho adaptável */
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* --- Seção de Opções (Planos) --- */
+        .options-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 16px; /* Aumentado de 12px para dar mais respiro */
+            color: var(--text-main);
+            text-align: left;
+            width: 100%;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center; /* Centraliza o rádio com o conteúdo no geral */
+            justify-content: space-between;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-card);
+            gap: 12px; /* Espaço entre o rádio e o texto */
+        }
+
+        .option-label:hover {
+            border-color: #cbd5e1;
+            background: var(--bump-bg);
+        }
+
+        .option-label input[type="radio"] { display: none; }
+        
+        .option-label:has(input[type="radio"]:checked) {
+            border-color: var(--primary);
+            background: rgba(2, 132, 199, 0.05);
+        }
+
+        /* Ícone de Rádio Customizado via CSS Puro para melhor alinhamento */
+        .radio-icon {
+            font-family: 'Material Icons Round';
+            font-size: 22px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: color 0.2s ease;
+        }
+        
+        .option-label:has(input[type="radio"]:checked) .radio-icon { color: var(--primary); }
+        .option-label:has(input[type="radio"]:checked) .radio-icon::after { content: "radio_button_checked"; }
+        .option-label:not(:has(input[type="radio"]:checked)) .radio-icon::after { content: "radio_button_unchecked"; }
+
+        .option-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Flexbox aprimorado: Permite quebra elegante se o texto for gigante */
+        .option-name {
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .option-name-text {
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+
+        /* Gatilho de Ancoragem (Mais Vendido) - Fixo, sem espremer */
+        .badge-best-seller {
+            background: #f59e0b;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .price-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            flex-shrink: 0; 
+            text-align: right;
+        }
+
+        .price-old {
+            font-size: 11px;
+            color: var(--error);
+            text-decoration: line-through;
+            margin-bottom: 2px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .option-price {
+            font-weight: 800;
+            color: var(--text-main);
+            font-size: clamp(14px, 4vw, 16px);
+        }
+
+        /* --- Seção de Order Bumps --- */
+        .order-bumps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bump-label {
+            display: flex;
+            align-items: flex-start; /* Alinha o checkbox no topo com a primeira linha do texto */
+            gap: 12px;
+            padding: 16px;
+            border: 1px dashed var(--primary);
+            background: var(--bump-bg);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .bump-label:has(input[type="checkbox"]:checked) {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid var(--success);
+        }
+
+        .bump-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--success);
+            margin-top: 1px; /* Ajuste fino visual */
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .bump-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .bump-title {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .bump-title span {
+            color: var(--success);
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .bump-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* --- Resumo e Inputs --- */
+        .form-section {
+            background: var(--bump-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+            margin-top: 14px; /* Espaçamento adicional solicitado entre os Bumps e o Total */
+        }
+
+        @media (max-width: 480px) {
+            .form-section { padding: 20px 16px; gap: 16px; margin-top: 8px; }
+        }
+
+        .total-display {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px; /* Aumentado de 16px para 20px */
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .total-display strong {
+            font-size: clamp(20px, 6vw, 26px); /* Tamanho adaptável responsivo */
+            color: var(--text-main);
+            font-weight: 800;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        /* Animação do Salto de Preço */
+        @keyframes price-pop {
+            0% { transform: scale(1); color: var(--text-main); }
+            50% { transform: scale(1.15); color: var(--success); }
+            100% { transform: scale(1); color: var(--text-main); }
+        }
+        .price-animating {
+            animation: price-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 600;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            text-align: center;
+        }
+
+        input[type="tel"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Botões */
+        .btn-primary {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--success);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Animação de Pulso Exclusiva para o Botão do Pix */
+        @keyframes pulse-btn {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        #btn-generate-pix {
+            animation: pulse-btn 2s infinite;
+        }
+
+        .btn-outline {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--bump-bg);
+            border-color: #cbd5e1;
+        }
+
+        /* Gatilho de Reversão de Risco (Garantia) */
+        .guarantee-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--success-light);
+            border-radius: 12px;
+            color: #065f46;
+            text-align: left;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            margin-top: 4px;
+        }
+
+        .guarantee-box i {
+            font-size: 28px;
+            color: var(--success);
+            flex-shrink: 0; /* Evita que o ícone esprema em celulares pequenos */
+        }
+
+        .guarantee-box .guarantee-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .guarantee-box strong {
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .guarantee-box p {
+            font-size: 11px;
+            margin: 0;
+            opacity: 0.9;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* QR Code */
+        #qrcode-wrapper {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 16px auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Mensagens de Erro/Aviso */
+        .msg-text {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0;
+        }
+        .msg-text.show {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 8px;
+        }
+        
+        .text-error { color: var(--error); }
+        .hidden { display: none !important; }
+
+        .secure-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 5px;
+            color: var(--success);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Tela de Expirado */
+        #expired-content {
+            text-align: center;
+            padding: 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #expired-content h2 {
+            font-size: clamp(20px, 5vw, 24px);
+            color: var(--error);
+            margin-bottom: 12px;
+        }
+        #expired-content p {
+            margin-bottom: 30px;
+        }
+
+        .fomo-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--success);
+            padding: 14px 16px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(-150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 320px;
+        }
+        .fomo-notification.show {
+            transform: translateX(0);
+        }
+        .fomo-icon {
+            background: var(--success-light);
+            color: var(--success);
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            flex-shrink: 0;
+        }
+        .fomo-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .fomo-text strong, .fomo-text b {
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        @media (max-width: 480px) {
+            .fomo-notification {
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        
+        <div id="checkout-content">
+            
+            <div class="timer-banner">
+                <i class="material-icons-round">timer</i>
+                Esta oferta expira em: <span id="countdown">--:--</span>
+            </div>
+
+            <div class="top-header">
+                <div class="logo-container">
+                    <img id="dynamic-logo" src="" alt="Logo" class="logo" onerror="this.style.display='none'">
+                </div>
+                <div class="company-indicator">
+                    <span class="highlight" id="dynamic-company"></span>
+                    <div class="separator"></div>
+                    <span id="dynamic-plan"></span>
+                </div>
+            </div>
+
+            <div class="header-group">
+                <h2>Finalize seu pagamento</h2>
+                <p class="text-muted">Selecione uma opção e insira seu WhatsApp</p>
+            </div>
+
+            <div>
+                <div class="options-title">Escolha uma opção:</div>
+                <div class="options-list" id="dynamic-options-list">
+                </div>
+            </div>
+
+            <div id="bumps-container">
+                <div class="options-title" style="margin-top: 16px;">Aproveite e adicione junto:</div>
+                <div class="order-bumps" id="dynamic-bumps-list">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="total-display">
+                    Total a pagar:
+                    <strong id="final-price">R$ 0,00</strong>
+                </div>
+
+                <input type="tel" id="whatsappInput" placeholder="Seu WhatsApp (Ex: 43 99122-8540)" maxlength="15">
+
+                <button id="btn-generate-pix" class="btn-primary">
+                    <i class="material-icons-round">pix</i> Gerar Pix
+                </button>
+                
+                <div id="form-error-msg" class="msg-text text-error">⚠️ Informe um número válido!</div>
+
+                <div class="guarantee-box">
+                    <i class="material-icons-round">verified_user</i>
+                    <div class="guarantee-text">
+                        <strong>Garantia Incondicional de 7 Dias</strong>
+                        <p>Seu dinheiro 100% seguro em sua compra.</p>
+                    </div>
+                </div>
+                
+                <div id="pix-payment-section" class="hidden" style="margin-top: 15px; display: flex; flex-direction: column;">
+                    <div id="qrcode-wrapper">
+                        <div id="qrcode"></div>
+                    </div>
+
+                    <button id="btn-copy-pix" class="btn-outline">
+                        <i class="material-icons-round">content_copy</i> Copiar Pix Copia e Cola
+                    </button>
+                </div>
+            </div>
+
+            <div class="social-proof">
+                <div class="stars">★★★★★</div>
+                <span>Junte-se a mais de 4.800 clientes satisfeitos</span>
+            </div>
+            
+            <div class="secure-footer">
+                <i class="material-icons-round" style="font-size: 16px;">lock</i>
+                Ambiente 100% Seguro
+            </div>
+        </div>
+
+        <div id="expired-content" class="hidden">
+            <i class="material-icons-round" style="font-size: 60px; color: var(--error); margin-bottom: 10px;">timer_off</i>
+            <h2>Que pena! Você perdeu a oportunidade</h2>
+            <p class="text-muted">O tempo da sua oferta exclusiva acabou!</p>
+            <a href="#" id="btn-outra-chance" class="btn-primary">
+                Quero outra oportunidade
+            </a>
+        </div>
+
+    </div>
+
+    <div id="fomo-toast" class="fomo-notification">
+        <div class="fomo-icon"><i class="material-icons-round" style="font-size: 20px;">local_mall</i></div>
+        <div class="fomo-text" id="fomo-message">
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // CONFIGURAÇÕES GERAIS - ALTERE TUDO AQUI!
+        // =========================================================================
+        const CONFIG = {
+            empresa: {
+                nome: "ESPIÃO DE TRANSAÇÃO",
+                codigo: "ETH", // <--- CÓDIGO CURTO DA EMPRESA (Utilizado no texto do PIX)
+                plano: "CONSULTA AVANÇADA",
+                logoUrl: "https://pagamento.grupobhds.com/inexplor/espiaodetransacao/logo.png"
+            },
+            pix: {
+                chave: "financeiro@grupobhds.com",
+                nome: "BRUNO H DOS SANTOS",
+                cidade: "LONDRINA"
+            },
+            comportamento: {
+                tempoCronometroMinutos: 15, // Tempo que o cronômetro vai durar
+                linkOutraChance: "https://pagamento.grupobhds.com/inexplor/espiaodetransacao/novachance"
+            },
+            opcoes: [
+               { id: "ctaOp1", nome: "1 Consulta avançada", preco: 5.30, precoAntigo: 18.90, destaque: false, padrao: false },
+			   { id: "ctaOp2", nome: "30 Consultas avançada (válido 30 dias)", preco: 28.90, precoAntigo: 48.90, destaque: false, padrao: false },
+               { id: "ctaOp3", nome: "50 Consultas avançada (válido 30 dias)", preco: 38.90, precoAntigo: 78.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
+			   
+            ],
+            orderBumps: [
+               { id: "bump2", titulo: "Sem prazo de validade", descricao: "Use as consultas sem prazo de validade", preco: 8.90 }
+            ]
+        };
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.keyCode === 123) event.preventDefault();
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 73) event.preventDefault();
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 74) event.preventDefault();
+            if (event.ctrlKey && event.keyCode === 85) event.preventDefault();
+        });
+
+
+        function renderPage() {
+            document.getElementById('dynamic-logo').src = CONFIG.empresa.logoUrl;
+            document.getElementById('dynamic-company').innerText = CONFIG.empresa.nome;
+            document.getElementById('dynamic-plan').innerText = CONFIG.empresa.plano;
+            document.getElementById('btn-outra-chance').href = CONFIG.comportamento.linkOutraChance;
+
+            const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            const optionsList = document.getElementById('dynamic-options-list');
+            let optionsHTML = "";
+            CONFIG.opcoes.forEach(op => {
+                const checked = op.padrao ? "checked" : "";
+                const badge = op.destaque ? `<span class="badge-best-seller" title="${op.textoDestaque}">${op.textoDestaque}</span>` : "";
+                const priceOld = op.precoAntigo ? `<span class="price-old">De ${formatMoney(op.precoAntigo)}</span>` : "";
+                
+                optionsHTML += `
+                    <label class="option-label">
+                        <input type="radio" name="planOption" value="${op.preco}" data-id="${op.id}" data-name="${op.nome}" ${checked}>
+                        <span class="radio-icon"></span>
+                        <div class="option-content">
+                            <div class="option-name">
+                                <span class="option-name-text">${op.nome}</span>
+                                ${badge}
+                            </div>
+                            <div class="price-group">
+                                ${priceOld}
+                                <span class="option-price">${formatMoney(op.preco)}</span>
+                            </div>
+                        </div>
+                    </label>
+                `;
+            });
+            optionsList.innerHTML = optionsHTML;
+
+            const bumpsContainer = document.getElementById('bumps-container');
+            const bumpsList = document.getElementById('dynamic-bumps-list');
+            if (CONFIG.orderBumps && CONFIG.orderBumps.length > 0) {
+                let bumpsHTML = "";
+                CONFIG.orderBumps.forEach(bump => {
+                    bumpsHTML += `
+                        <label class="bump-label">
+                            <input type="checkbox" class="bump-checkbox" value="${bump.preco}">
+                            <div class="bump-info">
+                                <div class="bump-title">${bump.titulo} <span>(+${formatMoney(bump.preco)})</span></div>
+                                <div class="bump-desc">${bump.descricao}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+                bumpsList.innerHTML = bumpsHTML;
+            } else {
+                bumpsContainer.style.display = 'none';
+            }
+        }
+        
+        renderPage();
+
+        const whatsappInput = document.getElementById('whatsappInput');
+        const btnGeneratePix = document.getElementById('btn-generate-pix');
+        const btnCopyPix = document.getElementById('btn-copy-pix');
+        const formErrorMsg = document.getElementById('form-error-msg');
+        const pixPaymentSection = document.getElementById('pix-payment-section');
+        const finalPriceEl = document.getElementById('final-price');
+
+        let currentPixString = "";
+        let qrCodeInstance = null;
+        let finalCalculatedTotal = 0;
+        let selectedPlanId = "";
+
+        const countdownEl = document.getElementById('countdown');
+        const checkoutContent = document.getElementById('checkout-content');
+        const expiredContent = document.getElementById('expired-content');
+        
+        function encodeSecurity(val) { return btoa(val.toString()); }
+        function decodeSecurity(val) { 
+            try { return atob(val); } catch(e) { return null; } 
+        }
+
+        function getDynamicStorageKey() {
+            let path = window.location.pathname; 
+            path = path.replace(/^\/|\/$/g, '');
+            if (!path) path = 'inicio';
+            let pageId = path.replace(/\//g, '.');
+            return encodeSecurity('bhds_lock_' + pageId);
+        }
+
+        const STORAGE_KEY = getDynamicStorageKey();
+        const TIMER_DURATION_MS = CONFIG.comportamento.tempoCronometroMinutos * 60 * 1000;
+        const RESET_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+        function setSecureTime(key, timestamp) {
+            const encodedTime = encodeSecurity(timestamp);
+            localStorage.setItem(key, encodedTime);
+            const maxAge = Math.floor(RESET_COOLDOWN_MS / 1000) + 86400; 
+            document.cookie = `${key}=${encodedTime}; max-age=${maxAge}; path=/`;
+        }
+
+        function getSecureTime(key) {
+            let lsValue = localStorage.getItem(key);
+            let cookieValue = null;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let c = cookies[i].trim();
+                if (c.startsWith(key + '=')) {
+                    cookieValue = c.substring(key.length + 1);
+                    break;
+                }
+            }
+
+            if (!lsValue && cookieValue) {
+                localStorage.setItem(key, cookieValue);
+                lsValue = cookieValue;
+            } else if (lsValue && !cookieValue) {
+                const maxAge = Math.floor(RESET_COOLDOWN_MS / 1000) + 86400;
+                document.cookie = `${key}=${lsValue}; max-age=${maxAge}; path=/`;
+            }
+
+            if (!lsValue) return null;
+
+            const decodedTime = decodeSecurity(lsValue);
+            return decodedTime ? parseInt(decodedTime, 10) : null;
+        }
+
+        function initTimer() {
+            let endTime = getSecureTime(STORAGE_KEY);
+            const now = Date.now();
+
+            if (endTime) {
+                if (now >= endTime) {
+                    if (now >= endTime + RESET_COOLDOWN_MS) {
+                        endTime = now + TIMER_DURATION_MS;
+                        setSecureTime(STORAGE_KEY, endTime);
+                    } else {
+                        showExpired();
+                        return;
+                    }
+                }
+            } else {
+                endTime = now + TIMER_DURATION_MS;
+                setSecureTime(STORAGE_KEY, endTime);
+            }
+
+            const timerInterval = setInterval(() => {
+                const currentTime = Date.now();
+                const diff = Math.floor((endTime - currentTime) / 1000);
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    countdownEl.innerText = "00:00";
+                    showExpired();
+                } else {
+                    const m = Math.floor(diff / 60);
+                    const s = diff % 60;
+                    countdownEl.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+                }
+            }, 1000);
+        }
+
+        function showExpired() {
+            checkoutContent.classList.add('hidden');
+            expiredContent.classList.remove('hidden');
+        }
+
+        initTimer();
+
+        function updateTotal() {
+            let total = 0;
+            selectedPlanId = "op";
+
+            const selectedRadio = document.querySelector('input[name="planOption"]:checked');
+            const checkboxBumps = document.querySelectorAll('.bump-checkbox');
+
+            if (selectedRadio) {
+                total += parseFloat(selectedRadio.value) || 0;
+                selectedPlanId = selectedRadio.getAttribute('data-id') || "op";
+            }
+
+            checkboxBumps.forEach(cb => {
+                if(cb.checked) {
+                    total += parseFloat(cb.value) || 0;
+                }
+            });
+
+            if (finalCalculatedTotal !== total && finalCalculatedTotal !== 0) {
+                finalPriceEl.classList.remove('price-animating');
+                void finalPriceEl.offsetWidth; // Força um reflow (reinicia a animação CSS)
+                finalPriceEl.classList.add('price-animating');
+            }
+
+            finalCalculatedTotal = total;
+            finalPriceEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            hidePixSection();
+        }
+
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'planOption' || e.target.classList.contains('bump-checkbox')) {
+                updateTotal();
+            }
+        });
+
+        updateTotal();
+
+        function hidePixSection() {
+            if (!pixPaymentSection.classList.contains('hidden')) {
+                pixPaymentSection.classList.add('hidden');
+            }
+        }
+
+        whatsappInput.addEventListener('input', function(e) {
+            // Remove tudo que não for número e limita a 11 dígitos
+            let value = e.target.value.replace(/\D/g, '').substring(0, 11);
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2);
+                if (value.length > 2) {
+                    formattedValue += ') ' + value.substring(2, 7);
+                    if (value.length > 7) {
+                        formattedValue += '-' + value.substring(7, 11);
+                    }
+                }
+            }
+            e.target.value = formattedValue;
+            hidePixSection();
+            formErrorMsg.classList.remove('show');
+        });
+
+        function generateDynamicPix(whatsapp, valor, planoId) {
+            const tlv = (id, value) => {
+                const len = value.length.toString().padStart(2, '0');
+                return `${id}${len}${value}`;
+            };
+
+            const chave = CONFIG.pix.chave;
+            const nome = CONFIG.pix.nome;
+            const cidade = CONFIG.pix.cidade;
+            const valorFormatado = (valor > 0 ? valor : 0).toFixed(2); 
+            
+            let descricaoBase = `${CONFIG.empresa.codigo}`;
+            
+            if (planoId) {
+                descricaoBase += ` - ${planoId}`; 
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get('id');
+            if (idParam) {
+                descricaoBase += ` - ${idParam}`; 
+            }
+
+            descricaoBase += ` - ${whatsapp}`;
+
+            let descricao = descricaoBase.substring(0, 99); 
+            descricao = descricao.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+            const merchantAccountInfo = tlv("00", "br.gov.bcb.pix") +
+                                        tlv("01", chave) +
+                                        tlv("02", descricao);
+            const merchantAccountInfoTlv = tlv("26", merchantAccountInfo);
+
+            let payload = "000201" + 
+                          "010211" + 
+                          merchantAccountInfoTlv + 
+                          "52040000" + 
+                          "5303986" + 
+                          tlv("54", valorFormatado) + 
+                          "5802BR" + 
+                          tlv("59", nome) + 
+                          tlv("60", cidade) + 
+                          tlv("62", tlv("05", "***")) + 
+                          "6304";
+
+            function crc16(str) {
+                let crc = 0xFFFF;
+                for (let c = 0; c < str.length; c++) {
+                    crc ^= str.charCodeAt(c) << 8;
+                    for (let i = 0; i < 8; i++) {
+                        if (crc & 0x8000) crc = (crc << 1) ^ 0x1021;
+                        else crc = crc << 1;
+                    }
+                }
+                return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+            }
+
+            return payload + crc16(payload);
+        }
+
+        // Botão Gerar Pix com Validação Inteligente
+        btnGeneratePix.addEventListener('click', () => {
+            const wppRawValue = whatsappInput.value.replace(/\D/g, '');
+            
+            // Verificações Inteligentes
+            const isRepeating = /^(\d)\1+$/.test(wppRawValue); // Verifica se os números são todos repetidos (ex: 11111111111)
+            
+            // Exige no mínimo 10 números (permite telefones fixos) e impede números 100% repetidos.
+            if (wppRawValue.length < 10 || isRepeating) {
+                formErrorMsg.innerText = "⚠️ Informe um número válido (DDD + Número)!";
+                formErrorMsg.classList.add('show');
+                setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
+                return;
+            }
+
+            const originalBtnHtml = btnGeneratePix.innerHTML;
+            btnGeneratePix.innerHTML = "Atualizando Código...";
+
+            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanId);
+            pixPaymentSection.classList.remove('hidden');
+
+            const qrcodeContainer = document.getElementById("qrcode");
+            
+            if (!qrCodeInstance) {
+                qrCodeInstance = new QRCode(qrcodeContainer, {
+                    text: currentPixString,
+                    width: 170,
+                    height: 170,
+                    colorDark : "#1e293b", 
+                    colorLight : "#ffffff", 
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            } else {
+                qrCodeInstance.clear();
+                qrCodeInstance.makeCode(currentPixString);
+            }
+            
+            setTimeout(() => {
+                btnGeneratePix.innerHTML = originalBtnHtml;
+                qrcodeContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        });
+
+        // Botão Copiar Pix com API Moderna e Fallback Automático
+        btnCopyPix.addEventListener('click', () => {
+            const originalHtml = btnCopyPix.innerHTML;
+            
+            const showSuccess = () => {
+                btnCopyPix.innerHTML = "<i class='material-icons-round'>check</i> Copiado com sucesso!";
+                btnCopyPix.style.borderColor = "var(--success)";
+                btnCopyPix.style.color = "var(--success)";
+                setTimeout(() => {
+                    btnCopyPix.innerHTML = originalHtml;
+                    btnCopyPix.style.borderColor = "";
+                    btnCopyPix.style.color = "";
+                }, 3000);
+            };
+
+            const fallbackCopy = () => {
+                const textArea = document.createElement("textarea");
+                textArea.value = currentPixString;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showSuccess();
+                } catch (err) {
+                    console.error('Falha ao copiar (fallback)', err);
+                }
+                textArea.remove();
+            };
+
+            // Tenta usar a API de Área de Transferência mais recente primeiro
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentPixString)
+                    .then(showSuccess)
+                    .catch(err => {
+                        console.warn('Fallback ativado: API Clipboard bloqueada ou falhou.', err);
+                        fallbackCopy();
+                    });
+            } else {
+                fallbackCopy();
+            }
+        });
+
+        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Camila"];
+        
+        let lastFomoName = "";
+
+        function triggerFomo() {
+            if(checkoutContent.classList.contains('hidden')) return;
+
+            const toast = document.getElementById('fomo-toast');
+            const msgEl = document.getElementById('fomo-message');
+            
+            let randomName;
+            if (fomoNames.length > 1) {
+                do {
+                    randomName = fomoNames[Math.floor(Math.random() * fomoNames.length)];
+                } while (randomName === lastFomoName);
+            } else {
+                randomName = fomoNames[0];
+            }
+            lastFomoName = randomName;
+            
+            const randomPlan = CONFIG.opcoes[Math.floor(Math.random() * CONFIG.opcoes.length)].nome;
+            
+            msgEl.innerHTML = `<b>${randomName}</b> acabou de comprar a opção<br><b>${randomPlan}</b>`;
+            
+            toast.classList.add('show');
+            
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function scheduleNextFomo() {
+            setTimeout(() => {
+                triggerFomo();
+                scheduleNextFomo();
+            }, 60000); // 1 minuto exato de alternância
+        }
+        
+        setTimeout(() => {
+            triggerFomo();
+            scheduleNextFomo();
+        }, 6000);
+
+    </script>
+</body>
+</html>
