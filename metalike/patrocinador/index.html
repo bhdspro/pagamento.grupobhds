@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>Página de Pagamento - Desbloqueio de Produto Oculto</title>
+    <title>Página de Pagamento - MetaLike</title>
     <meta name="robots" content="noindex, nofollow">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
@@ -836,10 +836,10 @@
         // =========================================================================
         const CONFIG = {
             empresa: {
-                nome: "INEXPLOR",
-                codigo: "inx",
-                plano: "DESBLOQUEIO DE PRODUTO OCULTO",
-                logoUrl: "https://pagamento.grupobhds.com/inexplor/desbloqueioprodutooculto/logo.png"
+                nome: "METALIKE",
+                codigo: "mtk",
+                plano: "PATROCINADOR",
+                logoUrl: "https://grupobhds.com/logo.png"
             },
             pix: {
                 chave: "financeiro@grupobhds.com",
@@ -847,21 +847,16 @@
                 cidade: "LONDRINA"
             },
             comportamento: {
-                tempoCronometroMinutos: 15,
-                linkOutraChance: "https://pagamento.grupobhds.com/inexplor/desbloqueioprodutooculto/novachance"
+                tempoCronometroMinutos: 15, // Tempo que o cronômetro vai durar
+                linkOutraChance: "https://api.whatsapp.com/send?phone=5543991228540&text=Ol%C3%A1%2C%20acabei%20de%20perder%20a%20oferta%20exclusiva%20do%20MetaLike%20(Patrocinador)"
             },
             opcoes: [
-               { id: "dpoOp1", nome: "10 Consultas (válido por 30 dias)", preco: 17.90, precoAntigo: 49.90, destaque: false, padrao: false },
-               { id: "dpoOp2", nome: "35 Consultas (válido por 30 dias)", preco: 35.90, precoAntigo: 89.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
-			   { id: "dpoOp3", nome: "80 Consultas (válido por 30 dias)", preco: 62.90, precoAntigo: 149.90, destaque: false, padrao: false },
-			   { id: "dpoOp4", nome: "130 Consultas (válido por 30 dias)", preco: 88.90, precoAntigo: 229.90, destaque: false, padrao: false },
-			   { id: "dpoOp5", nome: "260 Consultas (válido por 30 dias)", preco: 89.90, precoAntigo: 349.90, destaque: false, padrao: false }
+               { id: "ptcOp1", nome: "Anunciar em 1 página (30 dias)", preco: 9.80, precoAntigo: 18.90, destaque: false, padrao: false },
+               { id: "ptcOp2", nome: "Anunciar em várias páginas (30 dias)", preco: 28.90, precoAntigo: 48.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true }
                
             ],
             orderBumps: [
-			   { id: "dpoOb1", titulo: "Novas Atualizações", descricao: "Tenha acesso a novas atualizações e plataformas", preco: 9.80 },
-               { id: "dpoOb2", titulo: "Aumentar Validade", descricao: "Aumente a validade das consultas para 90 dias", preco: 17.90 },
-			   { id: "dpoOb3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
+               { id: "ptcOb1", titulo: "Criação do Design Gráfico", descricao: "Criaremos sua arte para o anúncio", preco: 8.90 }
             ]
         };
 
