@@ -9,13 +9,15 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-SEUCODIGO');</script>
-    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17688764045"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-17688764045');
+    </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -719,11 +721,6 @@
     </style>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-SEUCODIGO"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <div class="container" id="main-container">
         
         <div id="checkout-content">
@@ -853,15 +850,15 @@
             opcoes: [
                { id: "dpoOp1", nome: "10 Consultas (válido por 30 dias)", preco: 17.90, precoAntigo: 49.90, destaque: false, padrao: false },
                { id: "dpoOp2", nome: "35 Consultas (válido por 30 dias)", preco: 35.90, precoAntigo: 89.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true },
-			   { id: "dpoOp3", nome: "80 Consultas (válido por 30 dias)", preco: 62.90, precoAntigo: 149.90, destaque: false, padrao: false },
-			   { id: "dpoOp4", nome: "130 Consultas (válido por 30 dias)", preco: 88.90, precoAntigo: 229.90, destaque: false, padrao: false },
-			   { id: "dpoOp5", nome: "260 Consultas (válido por 30 dias)", preco: 89.90, precoAntigo: 349.90, destaque: false, padrao: false }
+               { id: "dpoOp3", nome: "80 Consultas (válido por 30 dias)", preco: 62.90, precoAntigo: 149.90, destaque: false, padrao: false },
+               { id: "dpoOp4", nome: "130 Consultas (válido por 30 dias)", preco: 88.90, precoAntigo: 229.90, destaque: false, padrao: false },
+               { id: "dpoOp5", nome: "260 Consultas (válido por 30 dias)", preco: 89.90, precoAntigo: 349.90, destaque: false, padrao: false }
                
             ],
             orderBumps: [
-			   { id: "dpoOb1", titulo: "Novas Atualizações", descricao: "Tenha acesso a novas atualizações e plataformas", preco: 9.80 },
-               { id: "dpoOb2", titulo: "Aumentar Validade", descricao: "Aumente a validade das consultas para 90 dias", preco: 17.90 },
-			   { id: "dpoOb3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
+               { id: "Ob1", titulo: "Novas Atualizações", descricao: "Tenha acesso a novas atualizações e plataformas", preco: 9.80 },
+               { id: "Ob2", titulo: "Aumentar Validade", descricao: "Aumente a validade das consultas para 90 dias", preco: 17.90 },
+               { id: "dpoOb3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
             ]
         };
 
@@ -914,9 +911,10 @@
             if (CONFIG.orderBumps && CONFIG.orderBumps.length > 0) {
                 let bumpsHTML = "";
                 CONFIG.orderBumps.forEach(bump => {
+                    // Aqui adicionamos o data-id e data-name para resgatar os dados do Order Bump depois
                     bumpsHTML += `
                         <label class="bump-label">
-                            <input type="checkbox" class="bump-checkbox" value="${bump.preco}">
+                            <input type="checkbox" class="bump-checkbox" value="${bump.preco}" data-id="${bump.id}" data-name="${bump.titulo}">
                             <div class="bump-info">
                                 <div class="bump-title">${bump.titulo} <span>(+${formatMoney(bump.preco)})</span></div>
                                 <div class="bump-desc">${bump.descricao}</div>
@@ -944,7 +942,11 @@
         let qrCodeInstance = null;
         let finalCalculatedTotal = 0;
         let selectedPlanId = "";
-        let selectedPlanName = "serviço"; // Captura do nome pro WPP
+        let selectedPlanName = "serviço"; 
+        
+        // Novas variáveis para armazenar os Order Bumps selecionados
+        let selectedBumpIds = [];
+        let selectedBumpNames = [];
 
         const countdownEl = document.getElementById('countdown');
         const checkoutContent = document.getElementById('checkout-content');
@@ -1046,6 +1048,8 @@
             let total = 0;
             selectedPlanId = "op";
             selectedPlanName = "serviço";
+            selectedBumpIds = [];
+            selectedBumpNames = [];
 
             const selectedRadio = document.querySelector('input[name="planOption"]:checked');
             const checkboxBumps = document.querySelectorAll('.bump-checkbox');
@@ -1056,9 +1060,12 @@
                 selectedPlanName = selectedRadio.getAttribute('data-name') || "serviço";
             }
 
+            // Captura os valores, IDs e Nomes dos bumps selecionados
             checkboxBumps.forEach(cb => {
                 if(cb.checked) {
                     total += parseFloat(cb.value) || 0;
+                    if(cb.getAttribute('data-id')) selectedBumpIds.push(cb.getAttribute('data-id'));
+                    if(cb.getAttribute('data-name')) selectedBumpNames.push(cb.getAttribute('data-name'));
                 }
             });
 
@@ -1106,7 +1113,8 @@
             formErrorMsg.classList.remove('show');
         });
 
-        function generateDynamicPix(whatsapp, valor, planoId) {
+        // Adicionado o parâmetro bumpIds na função
+        function generateDynamicPix(whatsapp, valor, planoId, bumpIds) {
             const tlv = (id, value) => {
                 const len = value.length.toString().padStart(2, '0');
                 return `${id}${len}${value}`;
@@ -1119,8 +1127,19 @@
             
             let descricaoBase = `${CONFIG.empresa.codigo}`;
             
+            // Monta a string dos IDs (Ex: dpoOp1-Ob2-dpoOb3)
+            let idsString = "";
             if (planoId) {
-                descricaoBase += ` - ${planoId}`; 
+                idsString += planoId;
+            }
+            
+            if (bumpIds && bumpIds.length > 0) {
+                if (idsString !== "") idsString += "-";
+                idsString += bumpIds.join("-");
+            }
+
+            if (idsString !== "") {
+                descricaoBase += ` - ${idsString}`; 
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1184,7 +1203,8 @@
             const originalBtnHtml = btnGeneratePix.innerHTML;
             btnGeneratePix.innerHTML = "Atualizando Código...";
 
-            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanId);
+            // Passando o Array de Bumps para o gerador de Pix
+            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanId, selectedBumpIds);
             pixPaymentSection.classList.remove('hidden');
 
             const qrcodeContainer = document.getElementById("qrcode");
@@ -1254,24 +1274,35 @@
             }
         });
 
-        // Botão WhatsApp M3 integrado com GTM
+        // Evento de Conversão no Botão WhatsApp com o Google Ads (gtag.js)
         btnConfirmPayment.addEventListener('click', () => {
-            // Enviar evento padrão para o Google Tag Manager
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                'event': 'conversion',
-                'plano_selecionado': selectedPlanName,
-                'valor_total': finalCalculatedTotal
-            });
+            
+            // Trava de segurança: forçar atualização exata de todos os valores no milissegundo do clique
+            updateTotal();
+            
+            // Disparo oficial da conversão configurada no Google Ads
+            if (typeof gtag === 'function') {
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-17688764045/YYIpCOvzgpscEI291PJB',
+                    'value': finalCalculatedTotal,
+                    'currency': 'BRL'
+                });
+            }
 
-            const textoWhatsapp = `Olá, acabei de realizar o pagamento do serviço ${selectedPlanName}`;
+            // Monta o texto do serviço e dos bumps
+            let servicosTexto = selectedPlanName;
+            if (selectedBumpNames.length > 0) {
+                servicosTexto += " + " + selectedBumpNames.join(" + ");
+            }
+
+            const textoWhatsapp = `Olá, acabei de realizar o pagamento do serviço: ${servicosTexto}`;
             const linkWhatsapp = `https://wa.me/5543991228540?text=${encodeURIComponent(textoWhatsapp)}`;
             
             window.open(linkWhatsapp, '_blank');
         });
 
         // FOMO logic original preservada
-        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Camila"];
+        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Cleonice", "Guilherme", "Everton", "Silvia", "Brian", "Alícia", "Agnes", "Sandra", "Daniel", "Camila"];
         
         let lastFomoName = "";
 
