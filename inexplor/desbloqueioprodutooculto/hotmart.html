@@ -734,7 +734,7 @@
         // =========================================================================
         (function wakeUpServer() {
             // Recomendação: Crie uma rota /ping ou raiz simples no seu backend só para retornar 200 OK.
-            const backendUrl = "https://pagamento-grupobhds.onrender.com/"; 
+            const backendUrl = "https://gbpagamento.onrender.com/"; 
             
             fetch(backendUrl, { method: 'GET', mode: 'no-cors' })
                 .then(() => console.log("Sinal de despertar enviado ao servidor."))
@@ -1132,7 +1132,7 @@
 
             try {
                 // ATENÇÃO: Substitua a URL abaixo pela URL oficial da sua API hospedada no Render para gravar o lead
-                await fetch('https://pagamento-grupobhds.onrender.com/api/telegram-webhook', {
+                await fetch('https://gbpagamento.onrender.com/api/telegram-webhook', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
