@@ -733,7 +733,6 @@
         // WAKE UP BACKEND (EVITAR COLD START DO RENDER)
         // =========================================================================
         (function wakeUpServer() {
-            // Recomendação: Crie uma rota /ping ou raiz simples no seu backend só para retornar 200 OK.
             const backendUrl = "https://gbpagamento.onrender.com/"; 
             
             fetch(backendUrl, { method: 'GET', mode: 'no-cors' })
@@ -768,12 +767,9 @@
                { id: "Ob3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
             ],
             
-            // --- ESTRUTURA DE CUPONS E LINK BASE (USADO PARA BUMPS OU SE O PLANO NÃO TIVER LINK DIRETO) ---
             checkoutBaseUrl: "https://pay.hotmart.com/O84969640O",
             
-            // O Desconto exato é calculado pela fórmula: R$ 343,00 (Preço Base) - Valor Total do Carrinho
             coupons: {
-                // --- Plano 1 (R$ 17,90) ---
                 "dpoOp1": "PLANO_325_10", 
                 "dpoOp1-Ob1": "PLANO_315_30",
                 "dpoOp1-Ob2": "PLANO_307_20",
@@ -783,7 +779,6 @@
                 "dpoOp1-Ob2-Ob3": "PLANO_287_40",
                 "dpoOp1-Ob1-Ob2-Ob3": "PLANO_277_60",
 
-                // --- Plano 2 (R$ 35,90) ---
                 "dpoOp2": "PLANO_307_10", 
                 "dpoOp2-Ob1": "PLANO_297_30",
                 "dpoOp2-Ob2": "PLANO_289_20",
@@ -793,7 +788,6 @@
                 "dpoOp2-Ob2-Ob3": "PLANO_269_40",
                 "dpoOp2-Ob1-Ob2-Ob3": "PLANO_259_60",
 
-                // --- Plano 3 (R$ 62,90) ---
                 "dpoOp3": "PLANO_280_10", 
                 "dpoOp3-Ob1": "PLANO_270_30",
                 "dpoOp3-Ob2": "PLANO_262_20",
@@ -803,7 +797,6 @@
                 "dpoOp3-Ob2-Ob3": "PLANO_242_40",
                 "dpoOp3-Ob1-Ob2-Ob3": "PLANO_232_60",
 
-                // --- Plano 4 (R$ 88,90) ---
                 "dpoOp4": "PLANO_254_10", 
                 "dpoOp4-Ob1": "PLANO_244_30",
                 "dpoOp4-Ob2": "PLANO_236_20",
@@ -813,7 +806,6 @@
                 "dpoOp4-Ob2-Ob3": "PLANO_216_40",
                 "dpoOp4-Ob1-Ob2-Ob3": "PLANO_206_60",
 
-                // --- Plano 5 (R$ 89,90) ---
                 "dpoOp5": "PLANO_253_10", 
                 "dpoOp5-Ob1": "PLANO_243_30",
                 "dpoOp5-Ob2": "PLANO_235_20",
@@ -823,7 +815,6 @@
                 "dpoOp5-Ob2-Ob3": "PLANO_215_40",
                 "dpoOp5-Ob1-Ob2-Ob3": "PLANO_205_60",
                 
-                // --- Fallback Padrão ---
                 "default": "CUPOM_PADRAO" 
             }
         };
@@ -1055,51 +1046,53 @@
         });
 
         // =========================================================================
+        // CORREÇÃO: RESTAURAR BOTÃO AO VOLTAR PELA SETA DO NAVEGADOR (BFCACHE)
+        // =========================================================================
+        window.addEventListener('pageshow', function(event) {
+            // Verifica se a página foi carregada através do cache do navegador (botão voltar)
+            if (event.persisted) {
+                btnPayNow.innerHTML = "<i class='material-icons-round'>payments</i> Pagar Agora";
+                btnPayNow.style.pointerEvents = "auto";
+                btnPayNow.style.opacity = "1";
+            }
+        });
+
+        // =========================================================================
         // LÓGICA DE REDIRECIONAMENTO E ENVIO PARA O BACKEND
         // =========================================================================
         btnPayNow.addEventListener('click', async () => {
             const wppRawValue = whatsappInput.value.replace(/\D/g, '');
             const isRepeating = /^(\d)\1+$/.test(wppRawValue);
             
-            // Trava 1: Se estiver vazio
             if (wppRawValue.length === 0) {
                 formErrorMsg.innerText = "⚠️ Preencha o seu WhatsApp para continuar!";
                 formErrorMsg.classList.add('show');
                 setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
-                return; // Bloqueia o redirecionamento
+                return; 
             }
 
-            // Trava 2: Se estiver incompleto ou com números repetidos
             if (wppRawValue.length < 10 || isRepeating) {
                 formErrorMsg.innerText = "⚠️ Informe um número de WhatsApp válido!";
                 formErrorMsg.classList.add('show');
                 setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
-                return; // Bloqueia o redirecionamento
+                return; 
             }
 
             let finalRedirectUrl = "";
             
-            // Extrai o DDD (primeiros 2 dígitos) e o Número (o resto)
             const ddd = wppRawValue.substring(0, 2);
             const numeroDeTelefone = wppRawValue.substring(2);
             const wppParam = `phoneac=${ddd}&phonenumber=${numeroDeTelefone}`;
 
-            // Verifica se o plano selecionado possui um link exclusivo configurado
             const planoSelecionado = CONFIG.opcoes.find(op => op.id === selectedPlanId);
             const temLinkDoPlano = planoSelecionado && planoSelecionado.linkCheckout && planoSelecionado.linkCheckout.trim() !== "";
 
-            // Lógica de Roteamento Inteligente
             if (selectedBumpIds.length === 0 && temLinkDoPlano) {
-                // SE NÃO TEM BUMP *E* O PLANO TEM LINK PRÓPRIO:
-                // Vai direto pro link do plano, SEM aplicar cupom.
                 const baseUrl = planoSelecionado.linkCheckout.trim();
                 const urlSeparator = baseUrl.includes('?') ? '&' : '?';
-                
                 finalRedirectUrl = `${baseUrl}${urlSeparator}${wppParam}`;
                 
             } else {
-                // SE TEM BUMP *OU* O PLANO NÃO TEM LINK (CAI NO FALLBACK BASE):
-                // Usa o link base + Cupom dinâmico
                 let combinationKey = selectedPlanId;
                 if (selectedBumpIds.length > 0) {
                     selectedBumpIds.sort(); 
@@ -1111,27 +1104,23 @@
 
                 const baseUrl = CONFIG.checkoutBaseUrl;
                 const urlSeparator = baseUrl.includes('?') ? '&' : '?';
-                
-                // Aplica o cupom apenas aqui, no link base!
                 finalRedirectUrl = `${baseUrl}${urlSeparator}offDiscount=${couponCode}&${wppParam}`;
             }
 
-            // Efeito visual de carregamento no botão
             const originalBtnHtml = btnPayNow.innerHTML;
             btnPayNow.innerHTML = "<i class='material-icons-round'>autorenew</i> Aguarde...";
             btnPayNow.style.pointerEvents = "none";
             btnPayNow.style.opacity = "0.8";
 
-            // --- ENVIO DOS DADOS PARA O BACKEND (RENDER) ---
             const payload = {
                 whatsapp: wppRawValue,
-                empresa: CONFIG.empresa.codigo, // Ex: "inx"
+                empresa: CONFIG.empresa.codigo,
                 planoId: selectedPlanId,
-                bumpIds: selectedBumpIds // Envia o array de order bumps
+                bumpIds: selectedBumpIds
             };
 
             try {
-                // ATENÇÃO: Substitua a URL abaixo pela URL oficial da sua API hospedada no Render para gravar o lead
+                // ATENÇÃO: Substitua a URL abaixo pela URL oficial da sua API hospedada no Render
                 await fetch('https://gbpagamento.onrender.com/api/telegram-webhook', {
                     method: 'POST',
                     headers: {
@@ -1141,11 +1130,15 @@
                 });
             } catch (error) {
                 console.error("Aviso: Falha ao enviar lead para o backend. O redirecionamento continuará.", error);
-                // Usamos o bloco catch para que, caso a sua API do Render caia ou demore muito, 
-                // a promessa não trave a página. A venda tem que acontecer de qualquer jeito.
             }
 
-            // Redirecionamento final após o fetch concluir (com ou sem sucesso)
+            // Uma segunda camada de segurança para destravar o botão após o clique, caso a página demore muito a sair
+            setTimeout(() => {
+                btnPayNow.innerHTML = originalBtnHtml;
+                btnPayNow.style.pointerEvents = "auto";
+                btnPayNow.style.opacity = "1";
+            }, 2500);
+
             window.location.href = finalRedirectUrl;
         });
 
