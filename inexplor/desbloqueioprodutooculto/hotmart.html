@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Página de Pagamento - Desbloqueio de Produto Oculto</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Paleta Material 3 Expressive */
+            --primary: #0284c7; 
+            --primary-hover: #0369a1;
+            --primary-container: rgba(2, 132, 199, 0.08);
+            --secondary: #0ea5e9;
+            --bg-page: #f0f4f8; 
+            --bg-card: #ffffff; 
+            --surface-container: #f8fafc;
+            --surface-container-high: #f1f5f9;
+            --text-main: #0f172a; 
+            --text-muted: #475569; 
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --error-light: #fee2e2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 16px;
+            /* Evita a seleção acidental de texto por curiosos */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Permite selecionar texto dentro de inputs apenas */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* Ocultar scrollbar */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Container Principal Responsivo (M3 Large Surface) --- */
+        .container {
+            background: var(--bg-card);
+            border-radius: 28px;
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.04);
+            width: 100%;
+            max-width: 520px;
+            padding: 32px 24px;
+            animation: slideUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (min-width: 600px) {
+            body { padding: 48px 24px; }
+            .container {
+                padding: 40px 48px;
+                border-radius: 32px;
+                gap: 28px;
+            }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Gatilhos Mentais: Urgência e Prova Social --- */
+        .timer-banner {
+            background: var(--error-light);
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .social-proof {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 8px;
+            border-top: 1px dashed var(--border-color);
+        }
+        .social-proof .stars {
+            color: #f59e0b;
+            font-size: 20px;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+        .social-proof span {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* --- Cabeçalho e Logo --- */
+        .top-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90px;
+            margin-bottom: 16px;
+        }
+
+        .logo {
+            max-height: 125px;
+            object-fit: contain;
+        }
+
+        /* Etiqueta premium */
+        .company-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: var(--surface-container);
+            padding: 6px 12px;
+            border-radius: 100px;
+        }
+
+        .company-indicator .highlight { color: var(--primary); }
+
+        .company-indicator .separator {
+            width: 4px;
+            height: 4px;
+            background-color: #cbd5e1;
+            border-radius: 50%;
+        }
+
+        .header-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            margin-top: 8px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: clamp(22px, 5vw, 26px);
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* --- Seção de Opções (Planos) M3 Cards --- */
+        .options-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-main);
+            text-align: left;
+            width: 100%;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border: 2px solid transparent;
+            background: var(--surface-container);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-label:hover {
+            background: var(--surface-container-high);
+            transform: translateY(-2px);
+        }
+
+        .option-label input[type="radio"] { display: none; }
+        
+        .option-label:has(input[type="radio"]:checked) {
+            border-color: var(--primary);
+            background: var(--primary-container);
+        }
+
+        /* Ícone de Rádio M3 */
+        .radio-icon {
+            font-family: 'Material Icons Round';
+            font-size: 24px;
+            color: #94a3b8;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .option-label:has(input[type="radio"]:checked) .radio-icon { color: var(--primary); transform: scale(1.1); }
+        .option-label:has(input[type="radio"]:checked) .radio-icon::after { content: "radio_button_checked"; }
+        .option-label:not(:has(input[type="radio"]:checked)) .radio-icon::after { content: "radio_button_unchecked"; }
+
+        .option-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .option-name {
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .option-name-text {
+            line-height: 1.3;
+            color: var(--text-main);
+        }
+
+        .badge-best-seller {
+            background: #f59e0b;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .price-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            flex-shrink: 0; 
+            text-align: right;
+        }
+
+        .price-old {
+            font-size: 12px;
+            color: var(--error);
+            text-decoration: line-through;
+            margin-bottom: 2px;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .option-price {
+            font-weight: 800;
+            color: var(--text-main);
+            font-size: clamp(15px, 4vw, 17px);
+        }
+
+        /* --- Seção de Order Bumps --- */
+        .order-bumps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bump-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px 20px;
+            border: 1px dashed #cbd5e1;
+            background: var(--bg-card);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .bump-label:has(input[type="checkbox"]:checked) {
+            background: var(--success-light);
+            border: 1px solid var(--success);
+            border-style: solid;
+        }
+
+        .bump-checkbox {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--success);
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+            border-radius: 6px;
+        }
+
+        .bump-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .bump-title {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .bump-title span {
+            color: #059669;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .bump-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* --- Resumo e Inputs M3 Area --- */
+        .form-section {
+            background: var(--surface-container);
+            padding: 24px;
+            border-radius: 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
+            margin-top: 8px; 
+        }
+
+        @media (max-width: 480px) {
+            .form-section { padding: 24px 20px; gap: 18px; border-radius: 20px; }
+        }
+
+        .total-display {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .total-display strong {
+            font-size: clamp(22px, 6vw, 28px);
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        /* Animação do Salto de Preço */
+        @keyframes price-pop {
+            0% { transform: scale(1); color: var(--text-main); }
+            50% { transform: scale(1.15); color: var(--success); }
+            100% { transform: scale(1); color: var(--text-main); }
+        }
+        .price-animating {
+            animation: price-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+            outline: none;
+            text-align: center;
+            box-shadow: inset 0 0 0 1px var(--border-color);
+        }
+
+        input[type="tel"]:focus {
+            box-shadow: inset 0 0 0 2px var(--primary);
+            background: #ffffff;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* Botões M3 Expressive (Pill Shape) */
+        .btn-primary {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 16px;
+            font-weight: 800;
+            border-radius: 100px;
+            cursor: pointer;
+            background: var(--success);
+            color: white;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        @keyframes pulse-btn {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        #btn-pay-now {
+            animation: pulse-btn 2s infinite;
+        }
+
+        /* Gatilho de Reversão de Risco (Garantia) */
+        .guarantee-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 16px;
+            background: var(--success-light);
+            border-radius: 16px;
+            color: #064e3b;
+            text-align: left;
+            margin-top: 4px;
+        }
+
+        .guarantee-box i {
+            font-size: 30px;
+            color: var(--success);
+            flex-shrink: 0; 
+        }
+
+        .guarantee-box .guarantee-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .guarantee-box strong {
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .guarantee-box p {
+            font-size: 12px;
+            margin: 0;
+            opacity: 0.85;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        /* Mensagens de Erro/Aviso */
+        .msg-text {
+            font-size: 14px;
+            font-weight: 700;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 0;
+        }
+        .msg-text.show {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 8px;
+        }
+        
+        .text-error { color: var(--error); }
+        .hidden { display: none !important; }
+
+        .secure-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Tela de Expirado */
+        #expired-content {
+            text-align: center;
+            padding: 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #expired-content h2 {
+            font-size: clamp(22px, 5vw, 26px);
+            color: var(--error);
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+        #expired-content p {
+            margin-bottom: 32px;
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        /* FOMO Toast */
+        .fomo-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--success);
+            padding: 14px 16px;
+            border-radius: 16px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(-150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 320px;
+        }
+        .fomo-notification.show {
+            transform: translateX(0);
+        }
+        .fomo-icon {
+            background: var(--success-light);
+            color: var(--success);
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            flex-shrink: 0;
+        }
+        .fomo-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        .fomo-text strong, .fomo-text b {
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        @media (max-width: 480px) {
+            .fomo-notification {
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="main-container">
+        
+        <div id="checkout-content">
+            
+            <div class="timer-banner">
+                <i class="material-icons-round">timer</i>
+                Esta oferta expira em: <span id="countdown">--:--</span>
+            </div>
+
+            <div class="top-header">
+                <div class="logo-container">
+                    <img id="dynamic-logo" src="" alt="Logo" class="logo" onerror="this.style.display='none'">
+                </div>
+                <div class="company-indicator">
+                    <span class="highlight" id="dynamic-company"></span>
+                    <div class="separator"></div>
+                    <span id="dynamic-plan"></span>
+                </div>
+            </div>
+
+            <div class="header-group">
+                <h2>Finalize seu pagamento</h2>
+                <p class="text-muted">Selecione uma opção e insira seu WhatsApp</p>
+            </div>
+
+            <div>
+                <div class="options-list" id="dynamic-options-list">
+                </div>
+            </div>
+
+            <div id="bumps-container">
+                <div class="options-title" style="margin-top: 16px;">Aproveite e adicione junto:</div>
+                <div class="order-bumps" id="dynamic-bumps-list">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="total-display">
+                    Total a pagar:
+                    <strong id="final-price">R$ 0,00</strong>
+                </div>
+
+                <input type="tel" id="whatsappInput" placeholder="Seu WhatsApp (Ex: 43 99122-8540)" maxlength="15">
+
+                <button id="btn-pay-now" class="btn-primary">
+                    <i class="material-icons-round">payments</i> Pagar Agora
+                </button>
+                
+                <div id="form-error-msg" class="msg-text text-error"></div>
+
+                <div class="guarantee-box">
+                    <i class="material-icons-round">verified_user</i>
+                    <div class="guarantee-text">
+                        <strong>Garantia Incondicional de 7 Dias</strong>
+                        <p>Seu dinheiro 100% seguro em sua compra.</p>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="social-proof">
+                <div class="stars">★★★★★</div>
+                <span>Junte-se a mais de 4.800 clientes satisfeitos</span>
+            </div>
+            
+            <div class="secure-footer">
+                <i class="material-icons-round" style="font-size: 16px;">lock</i>
+                Ambiente 100% Seguro
+            </div>
+        </div>
+
+        <div id="expired-content" class="hidden">
+            <i class="material-icons-round" style="font-size: 60px; color: var(--error); margin-bottom: 10px;">timer_off</i>
+            <h2>Que pena! Você perdeu a oportunidade</h2>
+            <p class="text-muted">O tempo da sua oferta exclusiva acabou!</p>
+            <a href="#" id="btn-outra-chance" class="btn-primary">
+                Quero outra oportunidade
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Toast Notification (FOMO) -->
+    <div id="fomo-toast" class="fomo-notification">
+        <div class="fomo-icon"><i class="material-icons-round" style="font-size: 20px;">local_mall</i></div>
+        <div class="fomo-text" id="fomo-message">
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // WAKE UP BACKEND (EVITAR COLD START DO RENDER)
+        // =========================================================================
+        (function wakeUpServer() {
+            // Recomendação: Crie uma rota /ping ou raiz simples no seu backend só para retornar 200 OK.
+            const backendUrl = "https://pagamento-grupobhds.onrender.com/"; 
+            
+            fetch(backendUrl, { method: 'GET', mode: 'no-cors' })
+                .then(() => console.log("Sinal de despertar enviado ao servidor."))
+                .catch(err => console.log("Servidor despertando...", err));
+        })();
+
+        // =========================================================================
+        // CONFIGURAÇÕES GERAIS E ESTRATÉGIA DE LINKS/CUPONS
+        // =========================================================================
+        const CONFIG = {
+            empresa: {
+                nome: "INEXPLOR",
+                codigo: "inx",
+                plano: "DESBLOQUEIO DE PRODUTO OCULTO",
+                logoUrl: "https://pagamento.grupobhds.com/inexplor/desbloqueioprodutooculto/logo.png"
+            },
+            comportamento: {
+                tempoCronometroMinutos: 15,
+                linkOutraChance: "https://pagamento.grupobhds.com/inexplor/desbloqueioprodutooculto/novachance"
+            },
+            opcoes: [
+               { id: "dpoOp1", nome: "10 Consultas (válido por 30 dias)", preco: 17.90, precoAntigo: 49.90, destaque: false, padrao: false, linkCheckout: "" },
+               { id: "dpoOp2", nome: "35 Consultas (válido por 30 dias)", preco: 35.90, precoAntigo: 89.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true, linkCheckout: "" },
+               { id: "dpoOp3", nome: "80 Consultas (válido por 30 dias)", preco: 62.90, precoAntigo: 149.90, destaque: false, padrao: false, linkCheckout: "" },
+               { id: "dpoOp4", nome: "130 Consultas (válido por 30 dias)", preco: 88.90, precoAntigo: 229.90, destaque: false, padrao: false, linkCheckout: "" },
+               { id: "dpoOp5", nome: "260 Consultas (válido por 30 dias)", preco: 89.90, precoAntigo: 349.90, destaque: false, padrao: false, linkCheckout: "" }
+            ],
+            orderBumps: [
+               { id: "Ob1", titulo: "Novas Atualizações", descricao: "Tenha acesso a novas atualizações e plataformas", preco: 9.80 },
+               { id: "Ob2", titulo: "Aumentar Validade", descricao: "Aumente a validade das consultas para 90 dias", preco: 17.90 },
+               { id: "Ob3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
+            ],
+            
+            // --- ESTRUTURA DE CUPONS E LINK BASE (USADO PARA BUMPS OU SE O PLANO NÃO TIVER LINK DIRETO) ---
+            checkoutBaseUrl: "https://pay.hotmart.com/O84969640O",
+            
+            // O Desconto exato é calculado pela fórmula: R$ 343,00 (Preço Base) - Valor Total do Carrinho
+            coupons: {
+                // --- Plano 1 (R$ 17,90) ---
+                "dpoOp1": "PLANO_325_10", 
+                "dpoOp1-Ob1": "PLANO_315_30",
+                "dpoOp1-Ob2": "PLANO_307_20",
+                "dpoOp1-Ob3": "PLANO_305_30",
+                "dpoOp1-Ob1-Ob2": "PLANO_297_40",
+                "dpoOp1-Ob1-Ob3": "PLANO_295_50",
+                "dpoOp1-Ob2-Ob3": "PLANO_287_40",
+                "dpoOp1-Ob1-Ob2-Ob3": "PLANO_277_60",
+
+                // --- Plano 2 (R$ 35,90) ---
+                "dpoOp2": "PLANO_307_10", 
+                "dpoOp2-Ob1": "PLANO_297_30",
+                "dpoOp2-Ob2": "PLANO_289_20",
+                "dpoOp2-Ob3": "PLANO_287_30",
+                "dpoOp2-Ob1-Ob2": "PLANO_279_40",
+                "dpoOp2-Ob1-Ob3": "PLANO_277_50",
+                "dpoOp2-Ob2-Ob3": "PLANO_269_40",
+                "dpoOp2-Ob1-Ob2-Ob3": "PLANO_259_60",
+
+                // --- Plano 3 (R$ 62,90) ---
+                "dpoOp3": "PLANO_280_10", 
+                "dpoOp3-Ob1": "PLANO_270_30",
+                "dpoOp3-Ob2": "PLANO_262_20",
+                "dpoOp3-Ob3": "PLANO_260_30",
+                "dpoOp3-Ob1-Ob2": "PLANO_252_40",
+                "dpoOp3-Ob1-Ob3": "PLANO_250_50",
+                "dpoOp3-Ob2-Ob3": "PLANO_242_40",
+                "dpoOp3-Ob1-Ob2-Ob3": "PLANO_232_60",
+
+                // --- Plano 4 (R$ 88,90) ---
+                "dpoOp4": "PLANO_254_10", 
+                "dpoOp4-Ob1": "PLANO_244_30",
+                "dpoOp4-Ob2": "PLANO_236_20",
+                "dpoOp4-Ob3": "PLANO_234_30",
+                "dpoOp4-Ob1-Ob2": "PLANO_226_40",
+                "dpoOp4-Ob1-Ob3": "PLANO_224_50",
+                "dpoOp4-Ob2-Ob3": "PLANO_216_40",
+                "dpoOp4-Ob1-Ob2-Ob3": "PLANO_206_60",
+
+                // --- Plano 5 (R$ 89,90) ---
+                "dpoOp5": "PLANO_253_10", 
+                "dpoOp5-Ob1": "PLANO_243_30",
+                "dpoOp5-Ob2": "PLANO_235_20",
+                "dpoOp5-Ob3": "PLANO_233_30",
+                "dpoOp5-Ob1-Ob2": "PLANO_225_40",
+                "dpoOp5-Ob1-Ob3": "PLANO_223_50",
+                "dpoOp5-Ob2-Ob3": "PLANO_215_40",
+                "dpoOp5-Ob1-Ob2-Ob3": "PLANO_205_60",
+                
+                // --- Fallback Padrão ---
+                "default": "CUPOM_PADRAO" 
+            }
+        };
+
+        // Bloqueadores para evitar curiosos
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', event => {
+            if (event.keyCode === 123) event.preventDefault();
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 73) event.preventDefault();
+            if (event.ctrlKey && event.shiftKey && event.keyCode === 74) event.preventDefault();
+            if (event.ctrlKey && event.keyCode === 85) event.preventDefault();
+        });
+
+        function renderPage() {
+            document.getElementById('dynamic-logo').src = CONFIG.empresa.logoUrl;
+            document.getElementById('dynamic-company').innerText = CONFIG.empresa.nome;
+            document.getElementById('dynamic-plan').innerText = CONFIG.empresa.plano;
+            document.getElementById('btn-outra-chance').href = CONFIG.comportamento.linkOutraChance;
+
+            const formatMoney = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            const optionsList = document.getElementById('dynamic-options-list');
+            let optionsHTML = "";
+            CONFIG.opcoes.forEach(op => {
+                const checked = op.padrao ? "checked" : "";
+                const badge = op.destaque ? `<span class="badge-best-seller" title="${op.textoDestaque}">${op.textoDestaque}</span>` : "";
+                const priceOld = op.precoAntigo ? `<span class="price-old">De ${formatMoney(op.precoAntigo)}</span>` : "";
+                
+                optionsHTML += `
+                    <label class="option-label">
+                        <input type="radio" name="planOption" value="${op.preco}" data-id="${op.id}" data-name="${op.nome}" ${checked}>
+                        <span class="radio-icon"></span>
+                        <div class="option-content">
+                            <div class="option-name">
+                                <span class="option-name-text">${op.nome}</span>
+                                ${badge}
+                            </div>
+                            <div class="price-group">
+                                ${priceOld}
+                                <span class="option-price">${formatMoney(op.preco)}</span>
+                            </div>
+                        </div>
+                    </label>
+                `;
+            });
+            optionsList.innerHTML = optionsHTML;
+
+            const bumpsContainer = document.getElementById('bumps-container');
+            const bumpsList = document.getElementById('dynamic-bumps-list');
+            if (CONFIG.orderBumps && CONFIG.orderBumps.length > 0) {
+                let bumpsHTML = "";
+                CONFIG.orderBumps.forEach(bump => {
+                    bumpsHTML += `
+                        <label class="bump-label">
+                            <input type="checkbox" class="bump-checkbox" value="${bump.preco}" data-id="${bump.id}" data-name="${bump.titulo}">
+                            <div class="bump-info">
+                                <div class="bump-title">${bump.titulo} <span>(+${formatMoney(bump.preco)})</span></div>
+                                <div class="bump-desc">${bump.descricao}</div>
+                            </div>
+                        </label>
+                    `;
+                });
+                bumpsList.innerHTML = bumpsHTML;
+            } else {
+                bumpsContainer.style.display = 'none';
+            }
+        }
+        
+        renderPage();
+
+        const whatsappInput = document.getElementById('whatsappInput');
+        const btnPayNow = document.getElementById('btn-pay-now');
+        const formErrorMsg = document.getElementById('form-error-msg');
+        const finalPriceEl = document.getElementById('final-price');
+
+        let finalCalculatedTotal = 0;
+        let selectedPlanId = "";
+        let selectedBumpIds = [];
+
+        const countdownEl = document.getElementById('countdown');
+        const checkoutContent = document.getElementById('checkout-content');
+        const expiredContent = document.getElementById('expired-content');
+        
+        function encodeSecurity(val) { return btoa(val.toString()); }
+        function decodeSecurity(val) { 
+            try { return atob(val); } catch(e) { return null; } 
+        }
+
+        function getDynamicStorageKey() {
+            let path = window.location.pathname; 
+            path = path.replace(/^\/|\/$/g, '');
+            if (!path) path = 'inicio';
+            let pageId = path.replace(/\//g, '.');
+            return encodeSecurity('bhds_lock_' + pageId);
+        }
+
+        const STORAGE_KEY = getDynamicStorageKey();
+        const TIMER_DURATION_MS = CONFIG.comportamento.tempoCronometroMinutos * 60 * 1000;
+        const RESET_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+        function setSecureTime(key, timestamp) {
+            const encodedTime = encodeSecurity(timestamp);
+            localStorage.setItem(key, encodedTime);
+            const maxAge = Math.floor(RESET_COOLDOWN_MS / 1000) + 86400; 
+            document.cookie = `${key}=${encodedTime}; max-age=${maxAge}; path=/`;
+        }
+
+        function getSecureTime(key) {
+            let lsValue = localStorage.getItem(key);
+            let cookieValue = null;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let c = cookies[i].trim();
+                if (c.startsWith(key + '=')) {
+                    cookieValue = c.substring(key.length + 1);
+                    break;
+                }
+            }
+
+            if (!lsValue && cookieValue) {
+                localStorage.setItem(key, cookieValue);
+                lsValue = cookieValue;
+            } else if (lsValue && !cookieValue) {
+                const maxAge = Math.floor(RESET_COOLDOWN_MS / 1000) + 86400;
+                document.cookie = `${key}=${lsValue}; max-age=${maxAge}; path=/`;
+            }
+
+            if (!lsValue) return null;
+
+            const decodedTime = decodeSecurity(lsValue);
+            return decodedTime ? parseInt(decodedTime, 10) : null;
+        }
+
+        function initTimer() {
+            let endTime = getSecureTime(STORAGE_KEY);
+            const now = Date.now();
+
+            if (endTime) {
+                if (now >= endTime) {
+                    if (now >= endTime + RESET_COOLDOWN_MS) {
+                        endTime = now + TIMER_DURATION_MS;
+                        setSecureTime(STORAGE_KEY, endTime);
+                    } else {
+                        showExpired();
+                        return;
+                    }
+                }
+            } else {
+                endTime = now + TIMER_DURATION_MS;
+                setSecureTime(STORAGE_KEY, endTime);
+            }
+
+            const timerInterval = setInterval(() => {
+                const currentTime = Date.now();
+                const diff = Math.floor((endTime - currentTime) / 1000);
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    countdownEl.innerText = "00:00";
+                    showExpired();
+                } else {
+                    const m = Math.floor(diff / 60);
+                    const s = diff % 60;
+                    countdownEl.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+                }
+            }, 1000);
+        }
+
+        function showExpired() {
+            checkoutContent.classList.add('hidden');
+            expiredContent.classList.remove('hidden');
+        }
+
+        initTimer();
+
+        function updateTotal() {
+            let total = 0;
+            selectedPlanId = "";
+            selectedBumpIds = [];
+
+            const selectedRadio = document.querySelector('input[name="planOption"]:checked');
+            const checkboxBumps = document.querySelectorAll('.bump-checkbox');
+
+            if (selectedRadio) {
+                total += parseFloat(selectedRadio.value) || 0;
+                selectedPlanId = selectedRadio.getAttribute('data-id') || "";
+            }
+
+            checkboxBumps.forEach(cb => {
+                if(cb.checked) {
+                    total += parseFloat(cb.value) || 0;
+                    if(cb.getAttribute('data-id')) selectedBumpIds.push(cb.getAttribute('data-id'));
+                }
+            });
+
+            if (finalCalculatedTotal !== total && finalCalculatedTotal !== 0) {
+                finalPriceEl.classList.remove('price-animating');
+                void finalPriceEl.offsetWidth;
+                finalPriceEl.classList.add('price-animating');
+            }
+
+            finalCalculatedTotal = total;
+            finalPriceEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'planOption' || e.target.classList.contains('bump-checkbox')) {
+                updateTotal();
+            }
+        });
+
+        updateTotal();
+
+        whatsappInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '').substring(0, 11);
+            let formattedValue = '';
+            
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2);
+                if (value.length > 2) {
+                    formattedValue += ') ' + value.substring(2, 7);
+                    if (value.length > 7) {
+                        formattedValue += '-' + value.substring(7, 11);
+                    }
+                }
+            }
+            e.target.value = formattedValue;
+            formErrorMsg.classList.remove('show');
+        });
+
+        // =========================================================================
+        // LÓGICA DE REDIRECIONAMENTO E ENVIO PARA O BACKEND
+        // =========================================================================
+        btnPayNow.addEventListener('click', async () => {
+            const wppRawValue = whatsappInput.value.replace(/\D/g, '');
+            const isRepeating = /^(\d)\1+$/.test(wppRawValue);
+            
+            // Trava 1: Se estiver vazio
+            if (wppRawValue.length === 0) {
+                formErrorMsg.innerText = "⚠️ Preencha o seu WhatsApp para continuar!";
+                formErrorMsg.classList.add('show');
+                setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
+                return; // Bloqueia o redirecionamento
+            }
+
+            // Trava 2: Se estiver incompleto ou com números repetidos
+            if (wppRawValue.length < 10 || isRepeating) {
+                formErrorMsg.innerText = "⚠️ Informe um número de WhatsApp válido!";
+                formErrorMsg.classList.add('show');
+                setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
+                return; // Bloqueia o redirecionamento
+            }
+
+            let finalRedirectUrl = "";
+            
+            // Extrai o DDD (primeiros 2 dígitos) e o Número (o resto)
+            const ddd = wppRawValue.substring(0, 2);
+            const numeroDeTelefone = wppRawValue.substring(2);
+            const wppParam = `phoneac=${ddd}&phonenumber=${numeroDeTelefone}`;
+
+            // Verifica se o plano selecionado possui um link exclusivo configurado
+            const planoSelecionado = CONFIG.opcoes.find(op => op.id === selectedPlanId);
+            const temLinkDoPlano = planoSelecionado && planoSelecionado.linkCheckout && planoSelecionado.linkCheckout.trim() !== "";
+
+            // Lógica de Roteamento Inteligente
+            if (selectedBumpIds.length === 0 && temLinkDoPlano) {
+                // SE NÃO TEM BUMP *E* O PLANO TEM LINK PRÓPRIO:
+                // Vai direto pro link do plano, SEM aplicar cupom.
+                const baseUrl = planoSelecionado.linkCheckout.trim();
+                const urlSeparator = baseUrl.includes('?') ? '&' : '?';
+                
+                finalRedirectUrl = `${baseUrl}${urlSeparator}${wppParam}`;
+                
+            } else {
+                // SE TEM BUMP *OU* O PLANO NÃO TEM LINK (CAI NO FALLBACK BASE):
+                // Usa o link base + Cupom dinâmico
+                let combinationKey = selectedPlanId;
+                if (selectedBumpIds.length > 0) {
+                    selectedBumpIds.sort(); 
+                    combinationKey += "-" + selectedBumpIds.join("-");
+                }
+
+                let couponCode = CONFIG.coupons[combinationKey];
+                if (!couponCode) couponCode = CONFIG.coupons["default"];
+
+                const baseUrl = CONFIG.checkoutBaseUrl;
+                const urlSeparator = baseUrl.includes('?') ? '&' : '?';
+                
+                // Aplica o cupom apenas aqui, no link base!
+                finalRedirectUrl = `${baseUrl}${urlSeparator}offDiscount=${couponCode}&${wppParam}`;
+            }
+
+            // Efeito visual de carregamento no botão
+            const originalBtnHtml = btnPayNow.innerHTML;
+            btnPayNow.innerHTML = "<i class='material-icons-round'>autorenew</i> Aguarde...";
+            btnPayNow.style.pointerEvents = "none";
+            btnPayNow.style.opacity = "0.8";
+
+            // --- ENVIO DOS DADOS PARA O BACKEND (RENDER) ---
+            const payload = {
+                whatsapp: wppRawValue,
+                empresa: CONFIG.empresa.codigo, // Ex: "inx"
+                planoId: selectedPlanId,
+                bumpIds: selectedBumpIds // Envia o array de order bumps
+            };
+
+            try {
+                // ATENÇÃO: Substitua a URL abaixo pela URL oficial da sua API hospedada no Render para gravar o lead
+                await fetch('https://pagamento-grupobhds.onrender.com/api/telegram-webhook', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error("Aviso: Falha ao enviar lead para o backend. O redirecionamento continuará.", error);
+                // Usamos o bloco catch para que, caso a sua API do Render caia ou demore muito, 
+                // a promessa não trave a página. A venda tem que acontecer de qualquer jeito.
+            }
+
+            // Redirecionamento final após o fetch concluir (com ou sem sucesso)
+            window.location.href = finalRedirectUrl;
+        });
+
+        // FOMO logic
+        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Camila"];
+        let lastFomoName = "";
+
+        function triggerFomo() {
+            if(checkoutContent.classList.contains('hidden')) return;
+
+            const toast = document.getElementById('fomo-toast');
+            const msgEl = document.getElementById('fomo-message');
+            
+            let randomName;
+            if (fomoNames.length > 1) {
+                do {
+                    randomName = fomoNames[Math.floor(Math.random() * fomoNames.length)];
+                } while (randomName === lastFomoName);
+            } else {
+                randomName = fomoNames[0];
+            }
+            lastFomoName = randomName;
+            
+            const randomPlan = CONFIG.opcoes[Math.floor(Math.random() * CONFIG.opcoes.length)].nome;
+            
+            msgEl.innerHTML = `<b>${randomName}</b><br>acabou de comprar <br><b>${randomPlan}</b>`;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function scheduleNextFomo() {
+            setTimeout(() => {
+                triggerFomo();
+                scheduleNextFomo();
+            }, 60000); 
+        }
+        
+        setTimeout(() => {
+            triggerFomo();
+            scheduleNextFomo();
+        }, 6000);
+
+    </script>
+</body>
+</html>
