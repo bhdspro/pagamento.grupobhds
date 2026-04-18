@@ -9,19 +9,8 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17688764045"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-17688764045');
-    </script>
-
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
@@ -495,71 +484,13 @@
             box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
         }
 
-        /* Animação de Pulso Exclusiva para o Botão do Pix */
         @keyframes pulse-btn {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
             70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
-        #btn-generate-pix {
+        #btn-pay-now {
             animation: pulse-btn 2s infinite;
-        }
-
-        .btn-outline {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 24px;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 100px;
-            cursor: pointer;
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline:hover {
-            background: var(--surface-container-high);
-            border-color: #cbd5e1;
-        }
-
-        /* Botão do WhatsApp M3 Expressive */
-        .btn-whatsapp {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center; 
-            gap: 10px; 
-            padding: 18px 24px;
-            font-size: 16px;
-            font-weight: 800;
-            border-radius: 100px;
-            cursor: pointer;
-            background: #25D366;
-            color: white;
-            border: none;
-            transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
-            margin-top: 12px;
-            white-space: nowrap; 
-            text-align: center;
-            letter-spacing: 0.3px;
-        }
-
-        .btn-whatsapp svg {
-            flex-shrink: 0; 
-            width: 24px;
-            height: 24px;
-        }
-
-        .btn-whatsapp:hover {
-            background: #128C7E;
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
         }
 
         /* Gatilho de Reversão de Risco (Garantia) */
@@ -600,19 +531,6 @@
             opacity: 0.85;
             font-weight: 600;
             line-height: 1.3;
-        }
-
-        /* QR Code Wrapper M3 */
-        #qrcode-wrapper {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 24px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid var(--border-color);
         }
 
         /* Mensagens de Erro/Aviso */
@@ -679,7 +597,7 @@
             border: 1px solid var(--border-color);
             border-left: 4px solid var(--success);
             padding: 14px 16px;
-            border-radius: 16px; /* Ajustado para M3 */
+            border-radius: 16px; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
@@ -765,11 +683,11 @@
 
                 <input type="tel" id="whatsappInput" placeholder="Seu WhatsApp (Ex: 43 99122-8540)" maxlength="15">
 
-                <button id="btn-generate-pix" class="btn-primary">
-                    <i class="material-icons-round">pix</i> Gerar Pix
+                <button id="btn-pay-now" class="btn-primary">
+                    <i class="material-icons-round">payments</i> Pagar Agora
                 </button>
                 
-                <div id="form-error-msg" class="msg-text text-error">⚠️ Informe um número válido!</div>
+                <div id="form-error-msg" class="msg-text text-error"></div>
 
                 <div class="guarantee-box">
                     <i class="material-icons-round">verified_user</i>
@@ -779,23 +697,6 @@
                     </div>
                 </div>
                 
-                <div id="pix-payment-section" class="hidden" style="margin-top: 15px; display: flex; flex-direction: column;">
-                    <div id="qrcode-wrapper">
-                        <div id="qrcode"></div>
-                    </div>
-
-                    <button id="btn-copy-pix" class="btn-outline">
-                        <i class="material-icons-round">content_copy</i> Copiar Pix Copia e Cola
-                    </button>
-
-                    <!-- Botão do WhatsApp Expressive SVG Centralizado -->
-                    <button id="btn-confirm-payment" class="btn-whatsapp">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        Confirmar Pagamento
-                    </button>
-                </div>
             </div>
 
             <div class="social-proof">
@@ -829,7 +730,18 @@
 
     <script>
         // =========================================================================
-        // CONFIGURAÇÕES GERAIS - ALTERE TUDO AQUI!
+        // WAKE UP BACKEND (EVITAR COLD START DO RENDER)
+        // =========================================================================
+        (function wakeUpServer() {
+            const backendUrl = "https://gbpagamento.onrender.com/"; 
+            
+            fetch(backendUrl, { method: 'GET', mode: 'no-cors' })
+                .then(() => console.log("Sinal de despertar enviado ao servidor."))
+                .catch(err => console.log("Servidor despertando...", err));
+        })();
+
+        // =========================================================================
+        // CONFIGURAÇÕES GERAIS E ESTRATÉGIA DE LINKS/CUPONS
         // =========================================================================
         const CONFIG = {
             empresa: {
@@ -838,22 +750,73 @@
                 plano: "APPS INTELIGENTES",
                 logoUrl: "https://pagamento.grupobhds.com/inexplor/smartapps/logo.png"
             },
-            pix: {
-                chave: "financeiro@grupobhds.com",
-                nome: "BRUNO H DOS SANTOS",
-                cidade: "LONDRINA"
-            },
             comportamento: {
                 tempoCronometroMinutos: 5,
-                linkOutraChance: "https://api.whatsapp.com/send?phone=5543991228540&text=Ol%C3%A1%2C%20acabei%20de%20perder%20novamente%20a%20oferta%20exclusiva%20do%20Apps%20Inteligentes!"
+                linkOutraChance: "https://go.grupobhds.com/mensagem-novachance-smartapps"
             },
             opcoes: [
-               { id: "apsOp1", nome: "10 Consultas (válido por 30 dias)", preco: 17.90, precoAntigo: 49.90, destaque: false, padrao: false },
-               { id: "apsOp2", nome: "35 Consultas (válido por 30 dias)", preco: 35.90, precoAntigo: 89.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true }               
+               { id: "apsOp1", nome: "10 Consultas (válido por 30 dias)", preco: 17.90, precoAntigo: 49.90, destaque: false, padrao: false, linkCheckout: "" },
+               { id: "apsOp2", nome: "35 Consultas (válido por 30 dias)", preco: 35.90, precoAntigo: 89.90, destaque: true, textoDestaque: "🔥 Mais Escolhido", padrao: true, linkCheckout: "" }
+               //{ id: "apsOp3", nome: "80 Consultas (válido por 30 dias)", preco: 62.90, precoAntigo: 149.90, destaque: false, padrao: false, linkCheckout: "" },
+               //{ id: "apsOp4", nome: "130 Consultas (válido por 30 dias)", preco: 88.90, precoAntigo: 229.90, destaque: false, padrao: false, linkCheckout: "" },
+               //{ id: "apsOp5", nome: "260 Consultas (válido por 30 dias)", preco: 89.90, precoAntigo: 349.90, destaque: false, padrao: false, linkCheckout: "" }
             ],
             orderBumps: [
                { id: "Ob1", titulo: "Novas Atualizações", descricao: "Tenha acesso a novas atualizações e plataformas", preco: 9.80 }
-            ]
+               //{ id: "Ob2", titulo: "Aumentar Validade", descricao: "Aumente a validade das consultas para 90 dias", preco: 17.90 },
+               //{ id: "Ob3", titulo: "Espião de Transação", descricao: "Use as consultas junto com o Espião de Transação", preco: 19.80 }
+            ],
+            
+            checkoutBaseUrl: "https://pay.hotmart.com/O84969640O",
+            
+            coupons: {
+                "apsOp1": "PLANO_325_10", 
+                "apsOp1-Ob1": "PLANO_315_30",
+                "apsOp1-Ob2": "PLANO_307_20",
+                "apsOp1-Ob3": "PLANO_305_30",
+                "apsOp1-Ob1-Ob2": "PLANO_297_40",
+                "apsOp1-Ob1-Ob3": "PLANO_295_50",
+                "apsOp1-Ob2-Ob3": "PLANO_287_40",
+                "apsOp1-Ob1-Ob2-Ob3": "PLANO_277_60",
+
+                "apsOp2": "PLANO_307_10", 
+                "apsOp2-Ob1": "PLANO_297_30",
+                "apsOp2-Ob2": "PLANO_289_20",
+                "apsOp2-Ob3": "PLANO_287_30",
+                "apsOp2-Ob1-Ob2": "PLANO_279_40",
+                "apsOp2-Ob1-Ob3": "PLANO_277_50",
+                "apsOp2-Ob2-Ob3": "PLANO_269_40",
+                "apsOp2-Ob1-Ob2-Ob3": "PLANO_259_60",
+
+                "apsOp3": "PLANO_280_10", 
+                "apsOp3-Ob1": "PLANO_270_30",
+                "apsOp3-Ob2": "PLANO_262_20",
+                "apsOp3-Ob3": "PLANO_260_30",
+                "apsOp3-Ob1-Ob2": "PLANO_252_40",
+                "apsOp3-Ob1-Ob3": "PLANO_250_50",
+                "apsOp3-Ob2-Ob3": "PLANO_242_40",
+                "apsOp3-Ob1-Ob2-Ob3": "PLANO_232_60",
+
+                "apsOp4": "PLANO_254_10", 
+                "apsOp4-Ob1": "PLANO_244_30",
+                "apsOp4-Ob2": "PLANO_236_20",
+                "apsOp4-Ob3": "PLANO_234_30",
+                "apsOp4-Ob1-Ob2": "PLANO_226_40",
+                "apsOp4-Ob1-Ob3": "PLANO_224_50",
+                "apsOp4-Ob2-Ob3": "PLANO_216_40",
+                "apsOp4-Ob1-Ob2-Ob3": "PLANO_206_60",
+
+                "apsOp5": "PLANO_253_10", 
+                "apsOp5-Ob1": "PLANO_243_30",
+                "apsOp5-Ob2": "PLANO_235_20",
+                "apsOp5-Ob3": "PLANO_233_30",
+                "apsOp5-Ob1-Ob2": "PLANO_225_40",
+                "apsOp5-Ob1-Ob3": "PLANO_223_50",
+                "apsOp5-Ob2-Ob3": "PLANO_215_40",
+                "apsOp5-Ob1-Ob2-Ob3": "PLANO_205_60",
+                
+                "default": "CUPOM_PADRAO" 
+            }
         };
 
         // Bloqueadores para evitar curiosos
@@ -880,7 +843,6 @@
                 const badge = op.destaque ? `<span class="badge-best-seller" title="${op.textoDestaque}">${op.textoDestaque}</span>` : "";
                 const priceOld = op.precoAntigo ? `<span class="price-old">De ${formatMoney(op.precoAntigo)}</span>` : "";
                 
-                // Variável data-name foi incluída na string para o WhatsApp
                 optionsHTML += `
                     <label class="option-label">
                         <input type="radio" name="planOption" value="${op.preco}" data-id="${op.id}" data-name="${op.nome}" ${checked}>
@@ -905,7 +867,6 @@
             if (CONFIG.orderBumps && CONFIG.orderBumps.length > 0) {
                 let bumpsHTML = "";
                 CONFIG.orderBumps.forEach(bump => {
-                    // Aqui adicionamos o data-id e data-name para resgatar os dados do Order Bump depois
                     bumpsHTML += `
                         <label class="bump-label">
                             <input type="checkbox" class="bump-checkbox" value="${bump.preco}" data-id="${bump.id}" data-name="${bump.titulo}">
@@ -925,22 +886,13 @@
         renderPage();
 
         const whatsappInput = document.getElementById('whatsappInput');
-        const btnGeneratePix = document.getElementById('btn-generate-pix');
-        const btnCopyPix = document.getElementById('btn-copy-pix');
-        const btnConfirmPayment = document.getElementById('btn-confirm-payment');
+        const btnPayNow = document.getElementById('btn-pay-now');
         const formErrorMsg = document.getElementById('form-error-msg');
-        const pixPaymentSection = document.getElementById('pix-payment-section');
         const finalPriceEl = document.getElementById('final-price');
 
-        let currentPixString = "";
-        let qrCodeInstance = null;
         let finalCalculatedTotal = 0;
         let selectedPlanId = "";
-        let selectedPlanName = "serviço"; 
-        
-        // Novas variáveis para armazenar os Order Bumps selecionados
         let selectedBumpIds = [];
-        let selectedBumpNames = [];
 
         const countdownEl = document.getElementById('countdown');
         const checkoutContent = document.getElementById('checkout-content');
@@ -1040,38 +992,32 @@
 
         function updateTotal() {
             let total = 0;
-            selectedPlanId = "op";
-            selectedPlanName = "serviço";
+            selectedPlanId = "";
             selectedBumpIds = [];
-            selectedBumpNames = [];
 
             const selectedRadio = document.querySelector('input[name="planOption"]:checked');
             const checkboxBumps = document.querySelectorAll('.bump-checkbox');
 
             if (selectedRadio) {
                 total += parseFloat(selectedRadio.value) || 0;
-                selectedPlanId = selectedRadio.getAttribute('data-id') || "op";
-                selectedPlanName = selectedRadio.getAttribute('data-name') || "serviço";
+                selectedPlanId = selectedRadio.getAttribute('data-id') || "";
             }
 
-            // Captura os valores, IDs e Nomes dos bumps selecionados
             checkboxBumps.forEach(cb => {
                 if(cb.checked) {
                     total += parseFloat(cb.value) || 0;
                     if(cb.getAttribute('data-id')) selectedBumpIds.push(cb.getAttribute('data-id'));
-                    if(cb.getAttribute('data-name')) selectedBumpNames.push(cb.getAttribute('data-name'));
                 }
             });
 
             if (finalCalculatedTotal !== total && finalCalculatedTotal !== 0) {
                 finalPriceEl.classList.remove('price-animating');
-                void finalPriceEl.offsetWidth; // Força um reflow (reinicia a animação CSS)
+                void finalPriceEl.offsetWidth;
                 finalPriceEl.classList.add('price-animating');
             }
 
             finalCalculatedTotal = total;
             finalPriceEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            hidePixSection();
         }
 
         document.addEventListener('change', function(e) {
@@ -1082,14 +1028,7 @@
 
         updateTotal();
 
-        function hidePixSection() {
-            if (!pixPaymentSection.classList.contains('hidden')) {
-                pixPaymentSection.classList.add('hidden');
-            }
-        }
-
         whatsappInput.addEventListener('input', function(e) {
-            // Remove tudo que não for número e limita a 11 dígitos
             let value = e.target.value.replace(/\D/g, '').substring(0, 11);
             let formattedValue = '';
             
@@ -1103,201 +1042,108 @@
                 }
             }
             e.target.value = formattedValue;
-            hidePixSection();
             formErrorMsg.classList.remove('show');
         });
 
-        // Adicionado o parâmetro bumpIds na função
-        function generateDynamicPix(whatsapp, valor, planoId, bumpIds) {
-            const tlv = (id, value) => {
-                const len = value.length.toString().padStart(2, '0');
-                return `${id}${len}${value}`;
-            };
-
-            const chave = CONFIG.pix.chave;
-            const nome = CONFIG.pix.nome;
-            const cidade = CONFIG.pix.cidade;
-            const valorFormatado = (valor > 0 ? valor : 0).toFixed(2); 
-            
-            let descricaoBase = `${CONFIG.empresa.codigo}`;
-            
-            // Monta a string dos IDs (Ex: dpoOp1-Ob2-dpoOb3)
-            let idsString = "";
-            if (planoId) {
-                idsString += planoId;
+        // =========================================================================
+        // CORREÇÃO: RESTAURAR BOTÃO AO VOLTAR PELA SETA DO NAVEGADOR (BFCACHE)
+        // =========================================================================
+        window.addEventListener('pageshow', function(event) {
+            // Verifica se a página foi carregada através do cache do navegador (botão voltar)
+            if (event.persisted) {
+                btnPayNow.innerHTML = "<i class='material-icons-round'>payments</i> Pagar Agora";
+                btnPayNow.style.pointerEvents = "auto";
+                btnPayNow.style.opacity = "1";
             }
-            
-            if (bumpIds && bumpIds.length > 0) {
-                if (idsString !== "") idsString += "-";
-                idsString += bumpIds.join("-");
-            }
+        });
 
-            if (idsString !== "") {
-                descricaoBase += ` - ${idsString}`; 
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const idParam = urlParams.get('id');
-            if (idParam) {
-                descricaoBase += ` - ${idParam}`; 
-            }
-
-            descricaoBase += ` - ${whatsapp}`;
-
-            let descricao = descricaoBase.substring(0, 99); 
-            descricao = descricao.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-
-            const merchantAccountInfo = tlv("00", "br.gov.bcb.pix") +
-                                        tlv("01", chave) +
-                                        tlv("02", descricao);
-            const merchantAccountInfoTlv = tlv("26", merchantAccountInfo);
-
-            let payload = "000201" + 
-                          "010211" + 
-                          merchantAccountInfoTlv + 
-                          "52040000" + 
-                          "5303986" + 
-                          tlv("54", valorFormatado) + 
-                          "5802BR" + 
-                          tlv("59", nome) + 
-                          tlv("60", cidade) + 
-                          tlv("62", tlv("05", "***")) + 
-                          "6304";
-
-            function crc16(str) {
-                let crc = 0xFFFF;
-                for (let c = 0; c < str.length; c++) {
-                    crc ^= str.charCodeAt(c) << 8;
-                    for (let i = 0; i < 8; i++) {
-                        if (crc & 0x8000) crc = (crc << 1) ^ 0x1021;
-                        else crc = crc << 1;
-                    }
-                }
-                return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-            }
-
-            return payload + crc16(payload);
-        }
-
-        // Botão Gerar Pix com Validação Inteligente
-        btnGeneratePix.addEventListener('click', () => {
+        // =========================================================================
+        // LÓGICA DE REDIRECIONAMENTO E ENVIO PARA O BACKEND
+        // =========================================================================
+        btnPayNow.addEventListener('click', async () => {
             const wppRawValue = whatsappInput.value.replace(/\D/g, '');
+            const isRepeating = /^(\d)\1+$/.test(wppRawValue);
             
-            // Verificações Inteligentes
-            const isRepeating = /^(\d)\1+$/.test(wppRawValue); // Verifica se os números são todos repetidos (ex: 11111111111)
-            
-            // Exige no mínimo 10 números (permite telefones fixos) e impede números 100% repetidos.
-            if (wppRawValue.length < 10 || isRepeating) {
-                formErrorMsg.innerText = "⚠️ Informe um número válido (DDD + Número)!";
+            if (wppRawValue.length === 0) {
+                formErrorMsg.innerText = "⚠️ Preencha o seu WhatsApp para continuar!";
                 formErrorMsg.classList.add('show');
                 setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
-                return;
+                return; 
             }
 
-            const originalBtnHtml = btnGeneratePix.innerHTML;
-            btnGeneratePix.innerHTML = "Atualizando Código...";
+            if (wppRawValue.length < 10 || isRepeating) {
+                formErrorMsg.innerText = "⚠️ Informe um número de WhatsApp válido!";
+                formErrorMsg.classList.add('show');
+                setTimeout(() => { formErrorMsg.classList.remove('show'); }, 3500);
+                return; 
+            }
 
-            // Passando o Array de Bumps para o gerador de Pix
-            currentPixString = generateDynamicPix(wppRawValue, finalCalculatedTotal, selectedPlanId, selectedBumpIds);
-            pixPaymentSection.classList.remove('hidden');
-
-            const qrcodeContainer = document.getElementById("qrcode");
+            let finalRedirectUrl = "";
             
-            if (!qrCodeInstance) {
-                qrCodeInstance = new QRCode(qrcodeContainer, {
-                    text: currentPixString,
-                    width: 170,
-                    height: 170,
-                    colorDark : "#1e293b", 
-                    colorLight : "#ffffff", 
-                    correctLevel : QRCode.CorrectLevel.L
-                });
+            const ddd = wppRawValue.substring(0, 2);
+            const numeroDeTelefone = wppRawValue.substring(2);
+            const wppParam = `phoneac=${ddd}&phonenumber=${numeroDeTelefone}`;
+
+            const planoSelecionado = CONFIG.opcoes.find(op => op.id === selectedPlanId);
+            const temLinkDoPlano = planoSelecionado && planoSelecionado.linkCheckout && planoSelecionado.linkCheckout.trim() !== "";
+
+            if (selectedBumpIds.length === 0 && temLinkDoPlano) {
+                const baseUrl = planoSelecionado.linkCheckout.trim();
+                const urlSeparator = baseUrl.includes('?') ? '&' : '?';
+                finalRedirectUrl = `${baseUrl}${urlSeparator}${wppParam}`;
+                
             } else {
-                qrCodeInstance.clear();
-                qrCodeInstance.makeCode(currentPixString);
-            }
-            
-            setTimeout(() => {
-                btnGeneratePix.innerHTML = originalBtnHtml;
-                qrcodeContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 300);
-        });
-
-        // Botão Copiar Pix com API Moderna e Fallback Automático
-        btnCopyPix.addEventListener('click', () => {
-            const originalHtml = btnCopyPix.innerHTML;
-            
-            const showSuccess = () => {
-                btnCopyPix.innerHTML = "<i class='material-icons-round'>check</i> Copiado com sucesso!";
-                btnCopyPix.style.borderColor = "var(--success)";
-                btnCopyPix.style.color = "var(--success)";
-                setTimeout(() => {
-                    btnCopyPix.innerHTML = originalHtml;
-                    btnCopyPix.style.borderColor = "";
-                    btnCopyPix.style.color = "";
-                }, 3000);
-            };
-
-            const fallbackCopy = () => {
-                const textArea = document.createElement("textarea");
-                textArea.value = currentPixString;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showSuccess();
-                } catch (err) {
-                    console.error('Falha ao copiar (fallback)', err);
+                let combinationKey = selectedPlanId;
+                if (selectedBumpIds.length > 0) {
+                    selectedBumpIds.sort(); 
+                    combinationKey += "-" + selectedBumpIds.join("-");
                 }
-                textArea.remove();
+
+                let couponCode = CONFIG.coupons[combinationKey];
+                if (!couponCode) couponCode = CONFIG.coupons["default"];
+
+                const baseUrl = CONFIG.checkoutBaseUrl;
+                const urlSeparator = baseUrl.includes('?') ? '&' : '?';
+                finalRedirectUrl = `${baseUrl}${urlSeparator}offDiscount=${couponCode}&${wppParam}`;
+            }
+
+            const originalBtnHtml = btnPayNow.innerHTML;
+            btnPayNow.innerHTML = "<i class='material-icons-round'>autorenew</i> Aguarde...";
+            btnPayNow.style.pointerEvents = "none";
+            btnPayNow.style.opacity = "0.8";
+
+            const payload = {
+                whatsapp: wppRawValue,
+                empresa: CONFIG.empresa.codigo,
+                planoId: selectedPlanId,
+                bumpIds: selectedBumpIds
             };
 
-            // Tenta usar a API de Área de Transferência mais recente primeiro
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(currentPixString)
-                    .then(showSuccess)
-                    .catch(err => {
-                        console.warn('Fallback ativado: API Clipboard bloqueada ou falhou.', err);
-                        fallbackCopy();
-                    });
-            } else {
-                fallbackCopy();
-            }
-        });
-
-        // Evento de Conversão no Botão WhatsApp com o Google Ads (gtag.js)
-        btnConfirmPayment.addEventListener('click', () => {
-            
-            // Trava de segurança: forçar atualização exata de todos os valores no milissegundo do clique
-            updateTotal();
-            
-            // Disparo oficial da conversão configurada no Google Ads
-            if (typeof gtag === 'function') {
-                gtag('event', 'conversion', {
-                    'send_to': 'AW-17688764045/YYIpCOvzgpscEI291PJB',
-                    'value': finalCalculatedTotal,
-                    'currency': 'BRL'
+            try {
+                // ATENÇÃO: Substitua a URL abaixo pela URL oficial da sua API hospedada no Render
+                await fetch('https://gbpagamento.onrender.com/api/telegram-webhook', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
+            } catch (error) {
+                console.error("Aviso: Falha ao enviar lead para o backend. O redirecionamento continuará.", error);
             }
 
-            // Monta o texto do serviço e dos bumps
-            let servicosTexto = selectedPlanName;
-            if (selectedBumpNames.length > 0) {
-                servicosTexto += " + " + selectedBumpNames.join(" + ");
-            }
+            // Uma segunda camada de segurança para destravar o botão após o clique, caso a página demore muito a sair
+            setTimeout(() => {
+                btnPayNow.innerHTML = originalBtnHtml;
+                btnPayNow.style.pointerEvents = "auto";
+                btnPayNow.style.opacity = "1";
+            }, 2500);
 
-            const textoWhatsapp = `Olá, acabei de realizar o pagamento do serviço: ${servicosTexto}`;
-            const linkWhatsapp = `https://wa.me/5543991228540?text=${encodeURIComponent(textoWhatsapp)}`;
-            
-            window.open(linkWhatsapp, '_blank');
+            window.location.href = finalRedirectUrl;
         });
 
-        // FOMO logic original preservada
-        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Cleonice", "Guilherme", "Everton", "Silvia", "Brian", "Alícia", "Agnes", "Sandra", "Daniel", "Camila"];
-        
+        // FOMO logic
+        const fomoNames = ["João", "Maria", "Carlos", "Ana", "Lucas", "Fernanda", "Rafael", "Juliana", "Pedro", "Camila"];
         let lastFomoName = "";
 
         function triggerFomo() {
@@ -1318,11 +1164,10 @@
             
             const randomPlan = CONFIG.opcoes[Math.floor(Math.random() * CONFIG.opcoes.length)].nome;
             
-            msgEl.innerHTML = `<b>${randomName}</b><br>acabou de comprar a opção<br><b>${randomPlan}</b>`;
+            msgEl.innerHTML = `<b>${randomName}</b><br>acabou de comprar <br><b>${randomPlan}</b>`;
             
             toast.classList.add('show');
             
-
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 4000);
@@ -1332,7 +1177,7 @@
             setTimeout(() => {
                 triggerFomo();
                 scheduleNextFomo();
-            }, 60000); // 1 minuto exato de alternância
+            }, 60000); 
         }
         
         setTimeout(() => {
